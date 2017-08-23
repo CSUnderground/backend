@@ -1,0 +1,408 @@
+{{#section 'head'}}
+    <meta property="og:title" content="{{{safeJS program.name}}}" />
+    <meta property="og:url" content="https://csunderground.org/program/{{{program.id}}}" />
+    <meta property="og:image" content="https://csunderground.org/program/{{{program.id}}}/latest.png" />
+
+	<style>
+	    #live-editor {
+	    	margin:0px 10px;
+	    }
+
+	    .program-container {
+	    	background-color:#f7f7f7;
+	    	padding-top:1rem;
+	    	padding-bottom:1rem;
+	    }
+
+	    .program-title {
+	    	margin-bottom:5px;
+	    	color:black;
+	    }
+
+        .program-title-input {
+            height: 44px;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            padding-bottom: 10px;
+            margin-bottom:5px;
+        }
+
+	    .program-stats {
+	    	color:gray;
+	    	margin-bottom:10px;
+            line-height: 19px;
+	    }
+
+	    .owner-container {
+	    	background-color:white;
+	    	padding:10px 0px;
+	    	border-top:1px solid rgb(200,200,200);
+	    	border-bottom:1px solid rgb(200,200,200);
+	    }
+	    .owner-avatar {
+	    	border-radius:100%;
+	    	background-color: rgb(249, 249, 249);
+			border: 1px solid rgb(190,190,190);
+	    	padding:10px;
+	    	width:90px;
+	    	height:90px;
+	    }
+	    .owner-info-container {
+	    	display:inline-block;
+	    	vertical-align:middle;
+	    	margin-left:10px;
+	    }
+
+	    .owner-info-container .owner-displayname {
+	    	color:black;
+	    	margin-bottom:0px;
+	    }
+
+	    .owner-info-container .owner-username {
+	    	margin-bottom:0px;
+	    	font-size:17px;
+	    }
+        .options-addon {
+            width:75px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .options-ig {
+            margin-bottom:5px;
+        }
+
+        .owner-username {
+            color:gray;
+        }
+
+	</style>
+	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.core_deps.css"/>
+	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.audio.css"/>
+	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.tooltips.css"/>
+	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.ui.css"/>
+	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.debugger.css"/>
+    <script>
+        window.onbeforeunload = function(e) {
+          return "Woah cool stuff.";
+        };
+    </script>
+{{/section}}
+
+
+<div class="program-container text-muted">
+    <div class="container" id="loadingNotice">
+        <center>
+            <h1>Loading...</h1>
+        </center>
+    </div>
+    <div class="container" id="program-meta" style="display:none">
+    	<center>
+    		<h1 class="program-title">{{{safeHTML program.name}}}</h1>
+            <input style="display:none" type="text" value="{{{safeJS program.name}}}" class="program-title-input">
+    		<p class="program-stats"><span class="program-votes">{{{program.sumVotes}}}</span> Vote{{{plural program.sumVotes}}} - <span class="program-views">{{{program.sumViews}}}</span> View{{{plural program.sumViews}}} - <span class="program-spinoffs">{{{program.spinOffs}}}</span> Spinoff{{{plural program.spinOffs}}}
+            <br><span title="Update EPOCH: {{{safeJS program.currentRevision.updated}}}">Last updated {{{timeago program.currentRevision.updated}}}.</span></p>
+    	</center>
+    </div>
+    <div id="live-editor"></div>
+    <div class="owner-container" style="display:none">
+    	<div class="container">
+    		<div class="row">
+        		<div class="col-8">
+                    <a href="/profile/{{{safeJS program.owner.username}}}" style="text-decoration: none;">
+            			<img class="owner-avatar" src="https://sandbox.csunderground.org/images/avatars/leaf-green.png">
+            			<div class="owner-info-container">
+            				<h2 class="owner-displayname">{{{safeHTML program.owner.displayName}}}</h2>
+            				<p class="owner-username">@{{{safeHTML program.owner.username}}}</p>
+            			</div>
+                    </a>
+        		</div>
+        		<div class="col-4" style="text-align:right">
+        			<div style="position:absolute;top: 50%;transform: translateY(-50%);right:0px">
+                        {{#if session.user}}
+                        <div class="btn-group">
+            				<button {{#if votedUp}}disabled{{/if}} href="javascript:void(0)" id="vote-up" class="btn btn-success">Vote +1</button>
+                            <button {{#unless votedDown}}{{#unless votedUp}}disabled{{/unless}}{{/unless}} href="javascript:void(0)" id="vote-neutral" class="btn btn-secondary">Neutral</button>
+                            <button {{#if votedDown}}disabled{{/if}} href="javascript:void(0)" id="vote-down" class="btn btn-dark">Vote -1</button>
+                        </div>
+        				<button disabled title="Not implemented" href="javascript:void(0)" id="report-program" class="btn btn-danger">Report Abuse</button>
+                        {{/if}}
+        			</div>
+        		</div>
+        	</div>
+        </div>
+    </div>
+</div>
+
+{{#section 'prescripts'}}
+	<!--script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script-->
+    <script src="https://sandbox.csunderground.org/js/live-editor.core_deps.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.editor_ace_deps.js"></script>
+{{/section}}
+
+{{#section 'postscripts'}}
+
+    <script>
+        var program = {{{json program}}}
+        var lastVote = {{#if votedUp}}1{{else if votedDown}}-1{{else}}0{{/if}};
+        var isOwner = false;
+        if(user){
+            isOwner = (user.id == program.owner.id);
+        }
+        {{#if session.user}}
+        if(isOwner){
+            $("#vote-down").remove();
+            $("#vote-neutral").remove();
+            $("#vote-up").remove();
+        }else{
+            function vote(val, callback){
+                $.ajax({
+                    url:"https://api.csunderground.org/v1/program/{{{program.id}}}/vote",
+                    type:"post",
+                    headers: {
+                        "CSU-Session-ID":user.sessionID
+                    },
+                    data:JSON.stringify({
+                        vote:val
+                    }),
+                    contentType:"application/json",
+                    dataType:'json',
+                    success: function(data) {
+                        if(data.success){
+                            callback()
+                        }else{
+                            callback(data.reason);
+                        }
+                    }
+                })
+            }
+            $("#vote-down").click(function() {
+                vote(-1, function(err){
+                    if(err){
+                        alert("Vote failed!\n\nError: " + err);
+                    }else{
+                        $("#vote-down").attr("disabled",true)
+                        $("#vote-up").attr("disabled",false)
+                        $("#vote-neutral").attr("disabled",false)
+                    }
+                })
+            })
+            $("#vote-up").click(function() {
+                vote(1, function(err){
+                    if(err){
+                        alert("Vote failed!\n\nError: " + err);
+                    }else{
+                        $("#vote-down").attr("disabled",false)
+                        $("#vote-up").attr("disabled",true)
+                        $("#vote-neutral").attr("disabled",false)
+                    }
+                })
+            })
+            $("#vote-neutral").click(function() {
+                vote(0, function(err){
+                    if(err){
+                        alert("Vote failed!\n\nError: " + err);
+                    }else{
+                        $("#vote-down").attr("disabled",false)
+                        $("#vote-up").attr("disabled",false)
+                        $("#vote-neutral").attr("disabled",true)
+                    }
+                })
+            })
+        }
+        if(!isOwner){
+            $.ajax({
+                url:"https://api.csunderground.org/v1/program/{{{program.id}}}/view",
+                type:"post",
+                headers: {
+                    "CSU-Session-ID":user.sessionID
+                },
+                dataType:'json',
+                success: function(data) {
+                    //console.log(data);
+                }
+            })
+            $(".g-recaptcha").hide(500);
+        }
+        {{/if}}
+        {{#if session.user.authLevel}}
+        isOwner = true;
+        {{/if}}
+        if(isOwner){
+            $("#report-program").parent().append('<button href="javascript:void(0)" id="delete-program" class="btn btn-danger">Delete</button>');
+            $("#report-program").remove();
+            $(".program-title").click(function() {
+                $(".program-title").hide();
+                $(".program-title-input").show();
+                $(".program-title-input").focus();
+            })
+            $(".program-title-input").focusout(function() {
+                program.name = $(".program-title-input").val();
+                $(".program-title").text(program.name);
+                $(".program-title").show();
+                $(".program-title-input").hide();
+            })
+            $("#delete-program").click(function() {
+                var confirm = prompt("Type \"y\" to confirm the deletion.");
+                if(confirm.toLowerCase() != "y") return alert("Deletion canceled.");
+                $.ajax({
+                    url:"https://api.csunderground.org/v1/program/{{{program.id}}}",
+                    type:"delete",
+                    headers: {
+                        "CSU-Session-ID":user.sessionID
+                    },
+                    dataType:'json',
+                    success: function(data) {
+                        if(data.success == true){
+                            alert("Successfully deleted program.");
+                            location.href="/";
+                        }else{
+                            alert("Failed to delete program.\nReason: " + data.reason);
+                        }
+                    }
+                })
+            })
+        }
+        $("#loadingNotice").hide();
+        $("#program-meta").show();
+        $(".owner-container").show();
+    </script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.audio.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.shared.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.tooltips.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.ui.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.editor_ace.js"></script>
+    <!--<script src="https://sandbox.csunderground.org/js/live-editor.debugger.js"></script>-->
+
+    <script>
+    var search = location.search.substring(1);
+    var params = {};
+    search.split("&").forEach(function(param) {
+        var tokens = param.split("=");
+        params[tokens[0]] = tokens[1];
+    });
+	window.loopProtect = true;
+	if(program.currentRevision.hasOwnProperty("loopProtect")){
+        if(!program.currentRevision.loopProtect){
+            var should;
+            if(user){
+    		   should = confirm("Press \"OK\" to allow program to disable loop protection.\n\n" + ((user.id != program.owner.id)?"Hitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!":"If the program keeps crashing your tab, it would be a good idea to not hit \"OK\"."));
+            }else{
+                should = confirm("Press \"OK\" to allow program to disable loop protection.\n\nHitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!");
+            }
+            if(should == true){
+                window.loopProtect = program.currentRevision.loopProtect;
+            }
+		}
+	}else{
+        program.currentRevision.loopProtect = true;
+    }
+    
+    function launchLiveEditor() {
+        var opts = {
+            el: $("#live-editor"),
+            code: program.currentRevision.code,
+            width: program.currentRevision.dimensions[0],
+            height: program.currentRevision.dimensions[1],
+            autoFocus: true,
+            workersDir: "https://sandbox.csunderground.org/workers/",
+            externalsDir: "https://sandbox.csunderground.org/external/",
+            imagesDir: "https://sandbox.csunderground.org/images/",
+            soundsDir: "https://sandbox.csunderground.org/sounds/",
+            execFile: "https://sandbox.csunderground.org/output.html",
+            jshintFile: "https://sandbox.csunderground.org/external/jshint/jshint.js",
+            useDebugger: false,
+            newErrorExperience: true,
+            enableLoopProtect:window.loopProtect
+        };
+        if(!window.liveEditor){
+            window.liveEditor = new LiveEditor(opts);
+        }else{
+            window.liveEditor.initialize(opts);
+            
+        }
+        liveEditor.editor.setFolds(program.currentRevision.folds);
+        liveEditor.editor.on("change", function() {
+            program.currentRevision.code = liveEditor.editor.text();
+            program.currentRevision.folds = liveEditor.editor.getAllFolds();
+        });
+        ScratchpadAutosuggest.init(liveEditor.editor.editor);
+        
+
+        if(isOwner){
+        	$(".csunderground-toolbar").append('<a id="save-code" href="javascript:void(0)" class="btn btn-success" style="margin-right: 6px;">Save</a>')
+            $("#report-program").parent().append('<a href="javascript:void(0)" id="delete-program" class="btn btn-danger">Delete</a>');
+            $("#report-program").remove();
+            $("#save-code").click(function() {
+                    $("#save-code").prop("disabled",true);
+                    $("#save-code").text("Saving...");
+                    liveEditor.getScreenshot(function(screen){
+                        $.ajax({
+                            url:"https://api.csunderground.org/v1/program/{{{program.id}}}",
+                            type:"put",
+                            headers: {
+                                "CSU-Session-ID":user.sessionID
+                            },
+                            data:JSON.stringify({
+                                dimensions:program.currentRevision.dimensions,
+                                name:program.name,
+                                code:liveEditor.editor.text(),
+                                folds:liveEditor.editor.getAllFolds(),
+                                thumbnail:screen,
+                                loopProtect:program.currentRevision.loopProtect
+                            }),
+                            contentType:"application/json",
+                            dataType:'json',
+                            success: function(data) {
+                                if(data.success == true){
+                                    $("#save-code").text("Saved!");
+                                    setTimeout(function() {
+                                        $("#save-code").text("Save");
+                                        $("#save-code").prop("disabled",true);
+                                    },3000);
+                                }else{
+                                    alert("Failed to save program.\nReason: " + data.reason);
+                                    $("#save-code").text("Save");
+                                    $("#save-code").prop("disabled",true);
+                                }
+                            }
+                        })
+                    })
+                })
+        }else{
+        	$(".csunderground-toolbar").append('<a id="save-code" href="javascript:void(0)" class="btn btn-primary" style="margin-right: 6px;">Spin-Off</a>')
+        }
+        $(".csunderground-toolbar").prepend('<button type="button" class="btn btn-secondary toggle-options" data-original-title title>Options</button>')
+        window.popoverButton = $(".toggle-options").popover({
+            content:'<div class="input-group options-ig"><span class="input-group-addon options-addon" id="addon-width">Width</span><input type="text" class="form-control" id="options-width" value="' + program.currentRevision.dimensions[0] + '" placeholder="Width" aria-label="Width" aria-describedby="addon-width"></div><div class="input-group options-ig"><span class="input-group-addon options-addon" id="addon-height">Height</span><input type="text" id="options-height" class="form-control" value="' + program.currentRevision.dimensions[1] + '" placeholder="Height" aria-label="Height" aria-describedby="addon-height"></div><div class="input-group options-ig"><button id="toggle-loopprotect" class="btn ' + ((window.loopProtect)?"btn-success":"btn-secondary") + '" style="width:100%">Loop Protect ' + ((window.loopProtect)?"Enabled":"Disabled") +'</button></div>',
+            html:true,
+            placement:"top",
+            title:"Options"
+        }).on("hide.bs.popover",function() {
+            program.currentRevision.dimensions = [Math.round(parseFloat($("#options-width").val())),Math.round(parseFloat($("#options-height").val()))];
+        }).on("hidden.bs.popover",function(){
+            launchLiveEditor();
+        }).on("show.bs.popover",function() {
+            $(".toggle-options").text("Apply Changes");
+        }).on("shown.bs.popover",function() {
+            $("#toggle-loopprotect").click(function() {
+                window.loopProtect = !window.loopProtect;
+                program.currentRevision.loopProtect = window.loopProtect;
+                if(window.loopProtect == true){
+                    $("#toggle-loopprotect").removeClass("btn-secondary").addClass("btn-success").text("Loop Protect Enabled");
+                }else{
+                    $("#toggle-loopprotect").removeClass("btn-success").addClass("btn-secondary").text("Loop Protect Disabled");
+                }
+            })
+        })
+
+    }
+	launchLiveEditor();
+		
+    </script>
+
+{{/section}}
+

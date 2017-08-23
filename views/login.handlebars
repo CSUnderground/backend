@@ -1,0 +1,73 @@
+{{#section 'head'}}
+	<style>
+		.card {
+			background-color:white;
+			padding:20px;
+		}
+		.login-container {
+			padding-top:30px;
+			padding-bottom:30px;
+			background-color:#f7f7f7;
+		}
+		.btn-half {
+			width:50%;
+		}
+	</style>
+{{/section}}
+<div class="login-container">
+	<div class="container">
+		<center>
+			<div class="card" style="width:30rem">
+				<div class="card-block">
+					<h2>Login</h2>
+					<div class="input-group" style="margin-top:20px">
+					  
+					  <input id="username" type="text" class="form-control" placeholder="Username" aria-label="Username">
+					</div>
+					<div class="input-group" style="margin-top:5px">
+					  <input id="password" type="password" class="form-control" placeholder="Password" aria-label="Password">
+					</div>
+					<div id="loginErrContainer" class="text-muted" style="margin-top:10px; display:none;">
+						<center id="loginErr">
+							An error occured. Please try again.
+						</center>
+					</div>
+					<div class="btn-group" role="group" style="width:100%; margin-top:10px">
+					  <button disabled id="login" type="button" class="btn btn-success btn-half">Login</button>
+					  <button id="forgot" type="button" class="btn btn-danger btn-half" onclick="alert(':(')">Forgot Password</button>
+					</div>
+				</div>
+			</div>
+		</center>
+	</div>
+</div>
+{{#section 'prescripts'}}
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+{{/section}}
+
+{{#section 'postscripts'}}
+	<script>
+		function changeCheck() {
+			if($("#username").val().length > 0 && $("#password").val().length > 0){
+				$("#login").prop("disabled",false);
+			}else{
+				$("#login").prop("disabled",true);
+			}
+		}
+		$("#username").on("input keyup paste",changeCheck);
+		$("#password").on("input keyup paste",changeCheck);
+		$("#login").click(function() {
+			$.post("https://csunderground.org/login?_=" + generateCacheOverride(),{
+				username: $("#username").val(),
+				password: $("#password").val()
+			}, function(data, status){
+				if(data.success){
+					location.href="/";
+				}else{
+					$("#loginErr").text(data.error)
+					$("#loginErrContainer").show();
+				}
+			});
+		})
+	</script>
+{{/section}}

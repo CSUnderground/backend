@@ -1,0 +1,81 @@
+{{#section 'head'}}
+	<style>
+		.account-container {
+			background-color:#f7f7f7;
+		}
+		.list-group-item {
+			padding: 0.5rem 16px;
+		}
+		.list-group a {
+			color:#007bff;
+		}
+		.list-group a:hover{
+			background-color:rgb(250,250,250);
+		}
+		.list-group-item-heading {
+			font-weight: 600;
+			font-size:14px;
+		}
+		.account-active {
+			border-left:3px solid #768bef;
+			padding-left:14px;
+		}
+		.account-container .container {
+			padding:4rem 1rem;
+		}
+		.account-container .input-group {
+			width:55%;
+			margin-bottom:1rem;
+		}
+		.account-container label {
+			font-weight: 600;
+			font-size:14px;
+			margin-bottom:.25rem;
+		}
+		.col-panel {
+			flex:0 0 20%;
+			max-width:20%;
+		}
+		.col-content {
+			flex:0 0 80%;
+			max-width:80%;
+		}
+	</style>
+{{/section}}
+<div class="account-container">
+	<div class="container">
+		<div class="row">
+			<div class="col-panel">
+				<ul class="list-group" style="margin-bottom:3rem">
+					<li class="list-group-item list-group-item-secondary list-group-item-heading">Account</li>
+					<a href="/account/profile" class="list-group-item{{#if pages.profile}} account-active{{/if}}">Profile</a>
+					<a href="/account/settings" class="list-group-item{{#if pages.settings}} account-active{{/if}}">Settings</a>
+					<a href="/account/security" class="list-group-item{{#if pages.security}} account-active{{/if}}">Security</a>
+					<a href="/account/external" class="list-group-item{{#if pages.external}} account-active{{/if}}">External Services</a>
+				</ul>
+
+				<ul class="list-group">
+					<li class="list-group-item list-group-item-secondary list-group-item-heading">Editor</li>
+					<a href="/account/editor/settings" class="list-group-item{{#if pages.editor-settings}} account-active{{/if}}">Settings</a>
+					<a href="/account/editor/security" class="list-group-item{{#if pages.editor-security}} account-active{{/if}}">Security</a>
+				</ul>
+			</div>
+			<div class="col-content" style="padding-left:2rem">
+				{{#if pages.profile}}
+					{{> accountProfile}}
+				{{else if pages.settings}}
+					{{> accountSettings}}
+				{{else if pages.security}}
+					{{> accountSecurity}}
+				{{else if pages.external}}
+					{{> accountExternal}}
+				{{/if}}
+			</div>
+		</div>
+
+	</div>
+</div>
+
+{{#section 'prescripts'}}
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+{{/section}}

@@ -1,0 +1,97 @@
+{{#section 'head'}}
+	<style>
+		.card {
+			background-color:white;
+			padding:20px;
+		}
+		.register-container {
+			padding-top:30px;
+			padding-bottom:30px;
+			background-color:#f7f7f7;
+		}
+		.btn-half {
+			width:50%;
+		}
+		#register {
+			width:100%;
+		}
+		.g-recaptcha {
+			margin-top:10px;
+		}
+	</style>
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+{{/section}}
+
+<div class="register-container">
+	<div class="container">
+		<center>
+			<div class="card" style="width:30rem">
+				<div class="card-block">
+					<h2>Register</h2>
+					<div class="input-group" style="margin-top:20px">
+					  <input id="username" type="text" class="form-control" placeholder="Username" aria-label="Username">
+					</div>
+					<div class="input-group" style="margin-top:5px">
+					  <input id="password" type="password" class="form-control" placeholder="Password" autocomplete="new-password" aria-label="Password">
+					</div>
+					<div class="input-group" style="margin-top:5px">
+					  <input id="password-confirm" type="password" class="form-control" placeholder="Confirm Password" autocomplete="new-password" aria-label="Confirm Password">
+					</div>
+					<div id="errContainer" class="text-muted" style="margin-top:10px; display:none;">
+						<center id="err">
+							An error occured. Please try again.
+						</center>
+					</div>
+					{{{captcha}}}
+					<div class="btn-group" role="group" style="width:100%; margin-top:10px">
+					  <button disabled id="register" type="button" class="btn btn-success btn">Register</button>
+					</div>
+				</div>
+			</div>
+		</center>
+	</div>
+</div>
+{{#section 'prescripts'}}
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+	<script>
+		window.setTimeout(function () {
+            $(".fake").hide();
+        },100);
+	</script>
+{{/section}}
+
+{{#section 'postscripts'}}
+	<script>
+		function changeCheck() {
+			if($("#username").val().length > 0 && $("#password").val().length > 0 && $("#password-confirm").val().length > 0){
+				$("#register").prop("disabled",false);
+			}else{
+				$("#register").prop("disabled",true);
+			}
+		}
+		$("#username").on("input keyup paste",changeCheck);
+		$("#password").on("input keyup paste",changeCheck);
+		$("#password-confirm").on("input keyup paste",changeCheck);
+		$("#register").click(function() {
+			if($("#password").val() != $("#password").val()){
+				$("#err").text("Passwords do not match!")
+				$("#errContainer").show();
+			}else{
+				$("#errContainer").hide();
+			}
+			$.post("https://csunderground.org/register",{
+				username: $("#username").val(),
+				password: $("#password").val(),
+				recaptcha: grecaptcha.getResponse()
+			}, function(data, status){
+				if(data.success){
+					location.href="/";
+				}else{
+					$("#err").text(data.error)
+					grecaptcha.reset()
+					$("#errContainer").show();
+				}
+			});
+		})
+	</script>
+{{/section}}

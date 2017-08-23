@@ -1,0 +1,212 @@
+{{#section 'head'}}
+    <style>
+        #live-editor {
+            margin:0px 10px;
+        }
+
+        .program-container {
+            background-color:#f7f7f7;
+            padding-top:1rem;
+            padding-bottom:1rem;
+        }
+
+        .program-title-input {
+            height: 44px;
+            width: 100%;
+            text-align: center;
+            font-size: 2rem;
+            padding-bottom: 10px;
+            margin-bottom:5px;
+        }
+        .options-addon {
+            width:75px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .options-ig {
+            margin-bottom:5px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.core_deps.css"/>
+    <link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.audio.css"/>
+    <link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.tooltips.css"/>
+    <link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.ui.css"/>
+    <link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.debugger.css"/>
+{{/section}}
+
+
+<div class="program-container text-muted">
+    <div class="container" id="loadingNotice">
+        <center>
+            <h1>Loading...</h1>
+        </center>
+    </div>
+    <div class="container" id="program-meta" style="display:none">
+        <center>
+            <input type="text" value="New Program" class="program-title-input">
+        </center>
+    </div>
+    <div id="live-editor"></div>
+</div>
+
+{{#section 'prescripts'}}
+    <!--script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script-->
+    <script src="https://sandbox.csunderground.org/js/live-editor.editor_ace_deps.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.core_deps.js"></script>
+{{/section}}
+
+{{#section 'postscripts'}}
+    
+    <script>
+        
+        var program;
+        if(localStorage.testProgram){
+            program = JSON.parse(localStorage.testProgram)
+        }else{
+            program = {
+                code: "",
+                folds: [],
+                name: "New Program",
+                dimensions: [400,400]
+            }
+            localStorage.testProgram = JSON.stringify(program);
+        }
+        $(".program-title-input").val(program.name);
+        $("#loadingNotice").hide();
+        $("#program-meta").show();
+        $(".owner-container").show();
+    </script>
+    
+    <script src="https://sandbox.csunderground.org/js/live-editor.audio.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.shared.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.tooltips.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.ui.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.editor_ace.js"></script>
+    <!--<script src="https://sandbox.csunderground.org/js/live-editor.debugger.js"></script>-->
+
+    <script>
+    var search = location.search.substring(1);
+    var params = {};
+    search.split("&").forEach(function(param) {
+        var tokens = param.split("=");
+        params[tokens[0]] = tokens[1];
+    });
+    window.loopProtect = true;
+    if(program.hasOwnProperty("loopProtect")){
+        if(!program.loopProtect){
+            var should = confirm("Press \"OK\" to allow program to disable loop protection.");
+            if(should == true){
+                window.loopProtect = program.loopProtect;
+            }
+        }
+    }else{
+        program.loopProtect = true;
+    }
+
+    function launchLiveEditor() {
+        var opts = {
+            el: $("#live-editor"),
+            code: program.code,
+            width: program.dimensions[0],
+            height: program.dimensions[1],
+            autoFocus: true,
+            workersDir: "https://sandbox.csunderground.org/workers/",
+            externalsDir: "https://sandbox.csunderground.org/external/",
+            imagesDir: "https://sandbox.csunderground.org/images/",
+            soundsDir: "https://sandbox.csunderground.org/sounds/",
+            execFile: "https://sandbox.csunderground.org/output.html",
+            jshintFile: "https://sandbox.csunderground.org/external/jshint/jshint.js",
+            useDebugger: false,
+            newErrorExperience: true,
+            enableLoopProtect:window.loopProtect
+        }
+    if(!window.liveEditor){
+        window.liveEditor = new LiveEditor(opts);
+    }else{
+        liveEditor.initialize(opts);
+    }
+    liveEditor.editor.setFolds(program.folds);
+    ScratchpadAutosuggest.init(liveEditor.editor.editor);
+    function storeProgram() {
+        program.name = $(".program-title-input").val();
+        program.code = liveEditor.editor.text();
+        program.folds = liveEditor.editor.getAllFolds()
+        window.localStorage["testProgram"] = JSON.stringify(program);
+    }
+    liveEditor.editor.on("change", function() {
+        storeProgram()
+    });
+    $(".program-title-input").change(function() {
+        storeProgram()
+    })
+    $(".csunderground-toolbar").append('<a id="save-code" href="javascript:void(0)" class="btn btn-success" style="margin-right: 6px;">Save</a>')
+    $("#save-code").click(function() {
+            if(!user){
+                location.href="/login"
+                return;
+            }
+            if(!user.sessionID){
+                location.href="/login"
+                return;
+            }
+            $("#save-code").prop("disabled",true);
+            $("#save-code").text("Saving...");
+            liveEditor.getScreenshot(function(screen){
+                var customProg = JSON.parse(JSON.stringify(program));
+                customProg.thumbnail = screen;
+                console.log(customProg)
+                $.ajax({
+                    url:"https://api.csunderground.org/v1/new/program/",
+                    type:"post",
+                    headers: {
+                        "CSU-Session-ID":user.sessionID
+                    },
+                    data:JSON.stringify(customProg),
+                    contentType:"application/json",
+                    dataType:'json',
+                    success: function(data) {
+                        if(data.success == true){
+                            $("#save-code").text("Saved!");
+                            delete localStorage.testProgram;
+                            location.href="/program/" + data.programID;
+                        }else{
+                            alert("Failed to save program.\nReason: " + data.reason);
+                            $("#save-code").text("Save");
+                            $("#save-code").prop("disabled",true);
+                        }
+                    }
+                })
+            })
+        })
+    $(".csunderground-toolbar").prepend('<button type="button" class="btn btn-secondary toggle-options" data-original-title title>Options</button>')
+        window.popoverButton = $(".toggle-options").popover({
+            content:'<div class="input-group options-ig"><span class="input-group-addon options-addon" id="addon-width">Width</span><input type="text" class="form-control" id="options-width" value="' + program.dimensions[0] + '" placeholder="Width" aria-label="Width" aria-describedby="addon-width"></div><div class="input-group options-ig"><span class="input-group-addon options-addon" id="addon-height">Height</span><input type="text" id="options-height" class="form-control" value="' + program.dimensions[1] + '" placeholder="Height" aria-label="Height" aria-describedby="addon-height"></div><div class="input-group options-ig"><button id="toggle-loopprotect" class="btn ' + ((window.loopProtect)?"btn-success":"btn-secondary") + '" style="width:100%">Loop Protect ' + ((window.loopProtect)?"Enabled":"Disabled") +'</button></div>',
+            html:true,
+            placement:"top",
+            title:"Options"
+        }).on("hide.bs.popover",function() {
+            program.dimensions = [Math.round(parseFloat($("#options-width").val())),Math.round(parseFloat($("#options-height").val()))];
+            storeProgram();
+        }).on("hidden.bs.popover",function(){
+            launchLiveEditor();
+        }).on("show.bs.popover",function() {
+            $(".toggle-options").text("Apply Changes");
+        }).on("shown.bs.popover",function() {
+            $("#toggle-loopprotect").click(function() {
+                window.loopProtect = !window.loopProtect;
+                program.loopProtect = window.loopProtect;
+                storeProgram();
+                if(window.loopProtect == true){
+                    $("#toggle-loopprotect").removeClass("btn-secondary").addClass("btn-success").text("Loop Protect Enabled");
+                }else{
+                    $("#toggle-loopprotect").removeClass("btn-success").addClass("btn-secondary").text("Loop Protect Disabled");
+                }
+            })
+        })
+    }
+    launchLiveEditor();
+    </script>
+{{/section}}

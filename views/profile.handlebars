@@ -1,0 +1,54 @@
+{{#section 'head'}}
+	<style>
+		.jumbotron h1{
+			font-size:4rem;
+		}
+		.jumbotron h3{
+			font-weight:300;
+		}
+		.jumbotron {
+			padding-top:3rem;
+			padding-bottom:3rem;
+		}
+	</style>
+{{/section}}
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">{{{safeHTML account.displayName}}}</h1>
+        <h3>@{{{safeHTML account.username}}}</h3>
+    </div>
+</section>
+
+<div class="program-list text-muted">
+    <div class="container">
+    	<h1 class="loading" style="text-align:center;">Loading...</h1>
+        <div class="row" id="programs">
+        </div>
+
+    </div>
+</div>
+
+
+{{#section 'prescripts'}}
+    <script>
+        var profile = {{{json account}}};
+    </script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+{{/section}}
+
+
+{{#section 'postscripts'}}
+	<script src="/js/programlist.js"></script>
+	<script>
+		$.getJSON("https://api.csunderground.org/v1/account/{{{safeJS account.username}}}/programs",function(data){
+			$(".loading").hide();
+			for(var i in data.programs){
+				var program = data.programs[i];
+				$("#programs").append(generateProgramCard(program,profile))
+			}
+		}).fail(function() { 
+			$(".loading").html("Failed to contact API!<br><h3 style=\"margin-top:10px\">If this issue continues to happen, please contact Loki for help.<br><a target=\"_blank\" href=\"https://discord.gg/UZdvBEu\">Discord Support</a></h3>");
+		});
+	</script>
+{{/section}}

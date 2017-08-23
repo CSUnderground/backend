@@ -1,0 +1,53 @@
+<h1>Profile</h1>
+<hr>
+<label for="displayName">Display Name</label>
+<div class="input-group">
+  <input type="text" class="form-control" id="displayName" value="{{session.user.displayName}}">
+</div>
+
+<label for="username">Username</label>
+<div class="input-group">
+  <input type="text" class="form-control" id="username" value="{{session.user.username}}">
+</div>
+
+<a href="javascript:void(0)" id="save" class="btn btn-success">Save</a>
+
+{{#section 'postscripts'}}
+	<script>
+        $("#save").click(function() {
+	        $("#save").prop("disabled",true);
+	        $("#save").text("Saving...");
+            $.ajax({
+                url:"https://api.csunderground.org/v1/user/profile",
+                type:"put",
+                headers: {
+                    "CSU-Session-ID":user.sessionID
+                },
+                data:JSON.stringify({
+                    username:$("#username").val(),
+                    displayName:$("#displayName").val()
+                }),
+                contentType:"application/json",
+                dataType:'json',
+                success: function(data) {
+                    if(data.success == true){
+                        $("#save").text("Saved!");
+                        setTimeout(function() {
+                            $("#save").text("Save");
+                            $("#save").prop("disabled",true);
+                        },3000);
+                    }else{
+                        alert("Failed to save profile data.\nReason: " + data.reason);
+                        $("#save").text("Save");
+                        $("#save").prop("disabled",true);
+                    }
+                },
+                error: function(e){
+                	alert("Failed to save profile data.");
+                    $("#save").text("Save");
+                    $("#save").prop("disabled",true);
+                }
+            })
+	    })
+	</script>
+{{/section}}

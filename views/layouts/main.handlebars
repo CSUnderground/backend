@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <link rel="shortcut icon" href="/small-icon.png" type="image/x-icon">
+	    <title>{{{title}}}</title>
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+	    <link rel="stylesheet" href="/css/main.css">
+	    <script>
+	    	{{#if session.user}}
+	    	var user = {{{json session.user}}}
+	    	{{else}}
+	    	var user = null;
+	    	{{/if}}
+	    	function generateCacheOverride() {
+	    		var nums = "0987654321".split("");
+	    		var str = ""
+	    		for(var i = 0; i < 10; i++){
+	    			str+=nums[Math.round(Math.min(nums.length-1,Math.max(0,Math.random() * (nums.length-1))))]
+	    		}
+	    		return str;
+	    	}
+	    </script>
+	    <meta property="og:site_name" content="CS Underground" />
+	    <meta property="og:type" content="website" />
+	    {{{_sections.head}}}
+	    {{#unless program}}
+	    <meta property="og:image" content="https://csunderground.org/icon.png" />
+	    {{/unless}}
+	    <meta property="og:description" content="Free, open-source platform that mimics KACS!"/>
+	    <style>
+	    	#navbarHeader h4{
+	    		font-size:1.25rem;
+	    	}
+	    </style>
+	</head>
+
+	<body>
+	    <div class="collapse bg-dark" id="navbarHeader">
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-sm-8 py-4">
+	                	{{#unless session.user}}
+		                    <h4 class="text-white">You are currently not logged in.</h4>
+		                    <p class="text-muted">Log in to get a full experience on CS Underground. Having an account will allow you to leave commands, vote for programs and even publish your own!</p>
+		                {{else}}
+		                	<h4 class="text-white">Hello, {{{session.user.displayName}}}!</h4>
+		                    <p class="text-muted">You currently have no notifications.</p>
+		                {{/unless}}
+	                </div>
+	                <div class="col-sm-2 py-4">
+	                    <h4 class="text-white">Account</h4>
+	                    {{#unless session.user}}
+		                    <ul class="list-unstyled">
+		                        <li><a href="/login" class="text-white">Login</a></li>
+		                        <li><a href="/register" class="text-white">Register</a></li>
+		                    </ul>
+	                    {{else}}
+	                    	<ul class="list-unstyled">
+	                    		<li><a href="/profile" class="text-white">My Profile</a></li>
+	                    		<li><a href="/profile" class="text-white">My Programs</a></li>
+	                    		<li><a href="/account" class="text-white">Account</a></li>
+		                        <li><a href="/logout" class="text-white">Logout</a></li>
+		                    </ul>
+	                    {{/unless}}
+	                </div>
+	                <div class="col-sm-2 py-4">
+	                    <h4 class="text-white">Site</h4>
+                    	<ul class="list-unstyled">
+                    		<li><a href="/" class="text-white">Browse Programs</a></li>
+                    		<li><a href="/new/program" class="text-white">New Program</a></li>
+	                    </ul>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="navbar navbar-dark bg-dark">
+	        <div class="container d-flex justify-content-between">
+	            <a href="/" class="navbar-brand" style="
+				    font-weight: 100;
+				"><img src="/small-icon.png" style="height: 16px;margin-top: -5px;margin-right: 3px;"><span style="
+				    font-weight: 600;
+				">CS</span>Underground</a>
+	            <div>
+	            	{{#if session.user}}
+		            <span style="margin-right: 1rem;color: rgba(255,255,255,.5)">{{{session.user.displayName}}}</span>
+		            {{/if}}
+		            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+			          <span class="navbar-toggler-icon"></span>
+			        </button>
+		        </div>
+	        </div>
+	    </div>
+
+	    {{{body}}}
+	    
+	    <footer class="text-muted">
+	        <div class="container">
+	            <p class="float-right">
+	                <a href="javascript:void(0)">Back to top</a>
+	            </p>
+	            <p>&copy; Loki Rautio 2017</p>
+	            <p>Various stock images provided by this site are owned entirely by Khan Academy.</p>
+	            {{{_sections.footer}}}
+	            <a href="javascript:void(0)" onclick="alert('If this is an issue about CSU\'s branding from Khan Academy, please contact me at lokio.casebstv (gmail.com) so we can sort this out. I\'m not a pro at legal stuff, so if we could resolve any branding issues reasonably in an email conversation, that would be nice.\n\nIf this is about a program, contact me at the same email. If I do not receive a proper DMCA complaint against a program, I will not be taking it down / hiding it. Even then, I still might not. Contact the program creator rather than me.')">Copyright Complaint</a>
+	        </div>
+	    </footer>
+	    {{{_sections.prescripts}}}
+	    
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	    {{{_sections.postscripts}}}
+	</body>
+</html>
