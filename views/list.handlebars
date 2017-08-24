@@ -35,12 +35,13 @@
 			You can now register for an account! Click the menu button above and then register to create one if you haven't already.
 		</div>
 		{{/if}}
-		<div class="btn-group btn-group-lg prglist-btn-group">
-		  <button id="hot" type="button" class="btn btn-light" onclick="loadPrograms('hot',0)">Hot</button>
-		  <button id="top-voted" type="button" class="btn btn-light active" onclick="loadPrograms('top-voted',0)">Top Voted</button>
-		  <button id="top-viewed" type="button" class="btn btn-light" onclick="loadPrograms('top-viewed',0)">Top Viewed</button>
-		  <button id="recent" type="button" class="btn btn-light" onclick="loadPrograms('recent',0)">Recent</button>
+		<div class="btn-group btn-group-md">
+		  <button id="hot" type="button" class="btn btn-outline-secondary active" onclick="loadPrograms('hot',0)">Hot</button>
+		  <button id="top-voted" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('top-voted',0)">Top Voted</button>
+		  <button id="top-viewed" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('top-viewed',0)">Top Viewed</button>
+		  <button id="recent" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('recent',0)">Recent</button>
 		</div>
+		<hr>
     	<h1 class="loading" style="text-align:center;">Loading...</h1>
         <div class="row" id="programs">
         </div>

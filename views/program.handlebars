@@ -86,9 +86,11 @@
 	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.ui.css"/>
 	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.debugger.css"/>
     <script>
-        window.onbeforeunload = function(e) {
-          return "Woah cool stuff.";
-        };
+        if(user.editor.security.alertRedirect){
+            window.onbeforeunload = function(e) {
+              return "Woah cool stuff.";
+            };
+        }
     </script>
 {{/section}}
 
@@ -287,13 +289,17 @@
 	window.loopProtect = true;
 	if(program.currentRevision.hasOwnProperty("loopProtect")){
         if(!program.currentRevision.loopProtect){
-            var should;
-            if(user){
-    		   should = confirm("Press \"OK\" to allow program to disable loop protection.\n\n" + ((user.id != program.owner.id)?"Hitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!":"If the program keeps crashing your tab, it would be a good idea to not hit \"OK\"."));
+            if(user.editor.security.alertLoop){
+                var should;
+                if(user){
+        		   should = confirm("Press \"OK\" to allow program to disable loop protection.\n\n" + ((user.id != program.owner.id)?"Hitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!":"If the program keeps crashing your tab, it would be a good idea to not hit \"OK\"."));
+                }else{
+                    should = confirm("Press \"OK\" to allow program to disable loop protection.\n\nHitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!");
+                }
+                if(should == true){
+                    window.loopProtect = program.currentRevision.loopProtect;
+                }
             }else{
-                should = confirm("Press \"OK\" to allow program to disable loop protection.\n\nHitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!");
-            }
-            if(should == true){
                 window.loopProtect = program.currentRevision.loopProtect;
             }
 		}
@@ -337,7 +343,7 @@
             }
         }
         $(".editor-toolbar").css("background-color",$(".ace_gutter").css("background-color"))
-
+        $("#restart-code").removeClass("btn-outline-success").addClass("btn-info")
         if(isOwner){
         	$(".csunderground-toolbar").append('<a id="save-code" href="javascript:void(0)" class="btn btn-success" style="margin-right: 6px;">Save</a>')
             $("#report-program").parent().append('<a href="javascript:void(0)" id="delete-program" class="btn btn-danger">Delete</a>');
@@ -404,7 +410,23 @@
                 }
             })
         })
+        {{#ifCond session.user.authLevel '>' '0'}}
+            $(".csunderground-toolbar").prepend('<a id="mod-options" href="javascript:void(0)" class="btn btn-warning" style="margin-right: 9px;">Mod Options</a>')
+            $("#mod-options").popover({
+                content:'<div class="input-group options-ig"><input type="text" class="form-control" id="tag-input" placeholder="Tag"><span class="input-group-btn"><button id="tag-add" class="btn btn-secondary">Add</button></span></div>',
+                html:true,
+                placement:"top",
+                title:"Mod Options"
+            }).on("hide.bs.popover",function() {
+                 $("#mod-options").text("Mod Options");
+            }).on("hidden.bs.popover",function(){
 
+            }).on("show.bs.popover",function() {
+                $("#mod-options").text("Apply Changes");
+            }).on("shown.bs.popover",function() {
+
+            })
+        {{/ifCond}}
     }
 	launchLiveEditor();
 		

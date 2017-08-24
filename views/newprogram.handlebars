@@ -137,6 +137,7 @@
         }
     }
     $(".editor-toolbar").css("background-color",$(".ace_gutter").css("background-color"))
+    $("#restart-code").removeClass("btn-outline-success").addClass("btn-info")
     function storeProgram() {
         program.name = $(".program-title-input").val();
         program.code = liveEditor.editor.text();
@@ -188,7 +189,7 @@
                 })
             })
         })
-    $(".csunderground-toolbar").prepend('<button type="button" class="btn btn-secondary toggle-options" data-original-title title>Options</button>')
+        $(".csunderground-toolbar").prepend('<button type="button" class="btn btn-secondary toggle-options" data-original-title title>Options</button>')
         window.popoverButton = $(".toggle-options").popover({
             content:'<div class="input-group options-ig"><span class="input-group-addon options-addon" id="addon-width">Width</span><input type="text" class="form-control" id="options-width" value="' + program.dimensions[0] + '" placeholder="Width" aria-label="Width" aria-describedby="addon-width"></div><div class="input-group options-ig"><span class="input-group-addon options-addon" id="addon-height">Height</span><input type="text" id="options-height" class="form-control" value="' + program.dimensions[1] + '" placeholder="Height" aria-label="Height" aria-describedby="addon-height"></div><div class="input-group options-ig"><button id="toggle-loopprotect" class="btn ' + ((window.loopProtect)?"btn-success":"btn-secondary") + '" style="width:100%">Loop Protect ' + ((window.loopProtect)?"Enabled":"Disabled") +'</button></div>',
             html:true,

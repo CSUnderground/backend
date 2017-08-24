@@ -1,1 +1,75 @@
+
+<style>
+	.input-group .btn{
+		width:100%;
+	}
+</style>
 <h1>Editor Security</h1>
+<hr>
+<label>Warn on Loop Protect Disabled</label>
+<div class="input-group">
+	<button id="alertLoopToggle" class="btn"></button>
+</div>
+<label>Warn on Redirect</label>
+<div class="input-group">
+	<button id="alertRedirectToggle" class="btn"></button>
+</div>
+<a href="javascript:void(0)" id="save" class="btn btn-success">Save</a>
+<script>
+	function updateButtons() {
+		if(user.editor.security.alertLoop){
+			$("#alertLoopToggle").removeClass("btn-secondary").addClass("btn-warning").text("Enabled");
+		}else{
+			$("#alertLoopToggle").removeClass("btn-warning").addClass("btn-secondary").text("Disabled");
+		}
+		if(user.editor.security.alertRedirect){
+			$("#alertRedirectToggle").removeClass("btn-secondary").addClass("btn-warning").text("Enabled");
+		}else{
+			$("#alertRedirectToggle").removeClass("btn-warning").addClass("btn-secondary").text("Disabled");
+		}
+	}
+	updateButtons();
+	$("#alertLoopToggle").click(function() {
+		user.editor.security.alertLoop = !user.editor.security.alertLoop;
+		updateButtons()
+	})
+	$("#alertRedirectToggle").click(function() {
+		user.editor.security.alertRedirect = !user.editor.security.alertRedirect;
+		updateButtons()
+	})
+    $("#save").click(function() {
+        $("#save").prop("disabled",true);
+        $("#save").text("Saving...");
+        $.ajax({
+            url:"https://api.csunderground.org/v1/user/editor-security",
+            type:"put",
+            headers: {
+                "CSU-Session-ID":user.sessionID
+            },
+            data:JSON.stringify({
+                alertLoop:user.editor.security.alertLoop,
+                alertRedirect:user.editor.security.alertRedirect
+            }),
+            contentType:"application/json",
+            dataType:'json',
+            success: function(data) {
+                if(data.success == true){
+                    $("#save").text("Saved!");
+                    setTimeout(function() {
+                        $("#save").text("Save");
+                        $("#save").prop("disabled",true);
+                    },3000);
+                }else{
+                    alert("Failed to save editor settings.\nReason: " + data.reason);
+                    $("#save").text("Save");
+                    $("#save").prop("disabled",true);
+                }
+            },
+            error: function(e){
+            	alert("Failed to save editor settings.");
+                $("#save").text("Save");
+                $("#save").prop("disabled",true);
+            }
+        })
+    })
+</script>
