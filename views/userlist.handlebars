@@ -1,0 +1,49 @@
+<section id="jumbo" class="jumbotron text-center">
+    <div class="container">
+        <h1 id="heading" class="jumbotron-heading">All Users</h1>
+        <p id="subtitle" class="lead text-muted">Here's all the users.</p>
+    </div>
+</section>
+
+
+<div class="program-list text-muted">
+    <div class="container">
+    	<h1 class="loading" style="text-align:center;">Loading...</h1>
+        <div class="row" id="users">
+        </div>
+
+    </div>
+</div>
+
+
+{{#section 'prescripts'}}
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+{{/section}}
+
+
+{{#section 'postscripts'}}
+	<script src="/js/userlist.js"></script>
+	<script>
+		function loadUsers(page){
+			$(".loading").text("Loading...");
+			$(".loading").show();
+			$("#users").html("");
+			$("#hot").removeClass("active");
+			$("#top-voted").removeClass("active");
+			$("#top-viewed").removeClass("active");
+			$("#recent").removeClass("active");
+			$.getJSON("https://api.csunderground.org/v1/users",function(data){
+				$(".loading").hide();
+				for(var i in data.users){
+					var user = data.users[i];
+					$("#users").append(generateUserCard(user))
+				}
+				$("#count").remove();
+				$("#heading").append('&nbsp;<span id="count">(' + data.users.length + ')</span>')
+			}).fail(function() { 
+				$(".loading").html("Failed to contact API!<br><h3 style=\"margin-top:10px\">If this issue continues to happen, please contact Loki for help.<br><a target=\"_blank\" href=\"https://discord.gg/UZdvBEu\">Discord Support</a></h3>");
+			});
+		}
+		loadUsers(0);
+	</script>
+{{/section}}

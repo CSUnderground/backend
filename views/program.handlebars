@@ -86,11 +86,13 @@
 	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.ui.css"/>
 	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.debugger.css"/>
     <script>
+    if(user){
         if(user.editor.security.alertRedirect){
             window.onbeforeunload = function(e) {
               return "Woah cool stuff.";
             };
         }
+    }
     </script>
 {{/section}}
 
@@ -136,6 +138,13 @@
         		</div>
         	</div>
         </div>
+    </div>
+    <div class="container" style="margin-top:2rem">
+        <div class="btn-group btn-group-md" id="sorters">
+          <button id="discussion" type="button" class="btn btn-outline-secondary" onclick="">Discussion</button>
+          <button id="spinOffs" type="button" class="btn btn-outline-secondary" onclick="">Spin-Offs</button>
+        </div>
+        <hr>
     </div>
 </div>
 
@@ -289,18 +298,21 @@
 	window.loopProtect = true;
 	if(program.currentRevision.hasOwnProperty("loopProtect")){
         if(!program.currentRevision.loopProtect){
-            if(user.editor.security.alertLoop){
-                var should;
-                if(user){
-        		   should = confirm("Press \"OK\" to allow program to disable loop protection.\n\n" + ((user.id != program.owner.id)?"Hitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!":"If the program keeps crashing your tab, it would be a good idea to not hit \"OK\"."));
+            if(!user){
+                    var should = confirm("Press \"OK\" to allow program to disable loop protection.\n\nHitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!");
+                    
+                    if(should == true){
+                        window.loopProtect = program.currentRevision.loopProtect;
+                    }
+            }else{
+                if(user.editor.security.alertLoop){
+                    var should = confirm("Press \"OK\" to allow program to disable loop protection.\n\n" + ((user.id != program.owner.id)?"Hitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!":"If the program keeps crashing your tab, it would be a good idea to not hit \"OK\"."));
+                    if(should == true){
+                        window.loopProtect = program.currentRevision.loopProtect;
+                    }
                 }else{
-                    should = confirm("Press \"OK\" to allow program to disable loop protection.\n\nHitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!");
-                }
-                if(should == true){
                     window.loopProtect = program.currentRevision.loopProtect;
                 }
-            }else{
-                window.loopProtect = program.currentRevision.loopProtect;
             }
 		}
 	}else{

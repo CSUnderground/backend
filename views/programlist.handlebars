@@ -15,9 +15,6 @@
         <p id="subtitle" class="lead text-muted">You'll find programs made by the CS Underground community below. Feel free to make your own and add to the pool.</p>
         <p>
             <a href="/new/program" class="btn btn-primary">New Program</a>
-            <!--a href="javascript:void(0)" class="btn btn-primary">New Webpage</a>
-        </p>
-        <p-->
             <a href="javascript:void(0)" class="btn btn-secondary">Report a problem</a>
         </p>
     </div>
@@ -31,21 +28,22 @@
 			Join the discord for development updates, support and more! <a href="https://discord.gg/UZdvBEu" target="_blank">Click here to join!</a>
 		</div>
 		{{else}}
-		<div class="alert alert-success" role="alert">
-			You can now register for an account! Click the menu button above and then register to create one if you haven't already.
+		<div class="alert alert-info" role="alert">
+			You need to register to post programs on the site. Please register! Passwords are hashed and salted before storage! CS Underground never stores your password in plain text in our database.
 		</div>
 		{{/if}}
-		<div class="btn-group btn-group-md">
+		<div class="btn-group btn-group-md" id="sorters">
 		  <button id="hot" type="button" class="btn btn-outline-secondary active" onclick="loadPrograms('hot',0)">Hot</button>
-		  <button id="top-voted" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('top-voted',0)">Top Voted</button>
-		  <button id="top-viewed" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('top-viewed',0)">Top Viewed</button>
-		  <button id="recent" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('recent',0)">Recent</button>
+		  <button id="top-voted" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('top-voted',0)">Votes</button>
+		  <button id="top-viewed" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('top-viewed',0)">Views</button>
+		  <button id="recentUpdated" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('recentUpdated',0)">Updated</button>
+		  <button id="recentCreated" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('recentCreated',0)">New</button>
 		</div>
 		<hr>
     	<h1 class="loading" style="text-align:center;">Loading...</h1>
         <div class="row" id="programs">
         </div>
-
+        <button id="load-more" class="btn btn-secondary" style="width: 100%;margin-top: 2rem;display:none">Load More Programs</button>
     </div>
 </div>
 
@@ -58,25 +56,40 @@
 {{#section 'postscripts'}}
 	<script src="/js/programlist.js"></script>
 	<script>
+		var lastLoaded = "";
+		var lastPage = 0;
 		function loadPrograms(type, page){
-			$(".loading").text("Loading...");
-			$(".loading").show();
-			$("#programs").html("");
-			$("#hot").removeClass("active");
-			$("#top-voted").removeClass("active");
-			$("#top-viewed").removeClass("active");
-			$("#recent").removeClass("active");
-			$("#" + type).addClass("active");
-			$.getJSON("https://api.csunderground.org/v1/programs/" + type,function(data){
+			if(page === 0 || lastLoaded !== type){
+				$(".loading").text("Loading...");
+				$(".loading").show();
+				$("#programs").html("");
+				var buttons = $("#sorters button");
+				for(var i = 0; i < buttons.length; i++){
+					$(buttons[i]).removeClass("active");
+				}
+				$("#" + type).addClass("active");
+			}
+			lastPage = page;
+			lastLoaded = type;
+			$.getJSON("https://api.csunderground.org/v1/programs/" + type + "?page=" + (page+1),function(data){
 				$(".loading").hide();
 				for(var i in data.programs){
 					var program = data.programs[i];
 					$("#programs").append(generateProgramCard(program))
+				}
+				if(data.programs.length === 25){
+					$("#load-more").attr("disabled",false).show();
+				}else{
+					$("#load-more").hide();
 				}
 			}).fail(function() { 
 				$(".loading").html("Failed to contact API!<br><h3 style=\"margin-top:10px\">If this issue continues to happen, please contact Loki for help.<br><a target=\"_blank\" href=\"https://discord.gg/UZdvBEu\">Discord Support</a></h3>");
 			});
 		}
 		loadPrograms("hot",0);
+		$("#load-more").click(function() {
+			$("#load-more").attr("disabled",true);
+			loadPrograms(lastLoaded,lastPage+1);
+		})
 	</script>
 {{/section}}
