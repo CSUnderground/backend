@@ -330,7 +330,13 @@
             program.currentRevision.folds = liveEditor.editor.getAllFolds();
         });
         ScratchpadAutosuggest.init(liveEditor.editor.editor);
-        
+        if(user){
+            liveEditor.editor.editor.setTheme(user.editor.theme);
+            if(ace.require("ace/ext/themelist").themesByName[user.editor.theme.split("/")[2]].isDark){
+                $(".error-buddy-hmm").css("color","white")
+            }
+        }
+        $(".editor-toolbar").css("background-color",$(".ace_gutter").css("background-color"))
 
         if(isOwner){
         	$(".csunderground-toolbar").append('<a id="save-code" href="javascript:void(0)" class="btn btn-success" style="margin-right: 6px;">Save</a>')

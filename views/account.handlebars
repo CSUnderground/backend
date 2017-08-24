@@ -42,6 +42,7 @@
 		}
 	</style>
 {{/section}}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
 <div class="account-container">
 	<div class="container">
 		<div class="row">
@@ -69,13 +70,13 @@
 					{{> accountSecurity}}
 				{{else if pages.external}}
 					{{> accountExternal}}
+				{{else if pages.editor-settings}}
+					{{> editorSettings}}
+				{{else if pages.editor-security}}
+					{{> editorSecurity}}
 				{{/if}}
 			</div>
 		</div>
 
 	</div>
 </div>
-
-{{#section 'prescripts'}}
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
-{{/section}}

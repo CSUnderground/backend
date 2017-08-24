@@ -130,6 +130,13 @@
     }
     liveEditor.editor.setFolds(program.folds);
     ScratchpadAutosuggest.init(liveEditor.editor.editor);
+    if(user){
+        liveEditor.editor.editor.setTheme(user.editor.theme);
+        if(ace.require("ace/ext/themelist").themesByName[user.editor.theme.split("/")[2]].isDark){
+            $(".error-buddy-hmm").css("color","white")
+        }
+    }
+    $(".editor-toolbar").css("background-color",$(".ace_gutter").css("background-color"))
     function storeProgram() {
         program.name = $(".program-title-input").val();
         program.code = liveEditor.editor.text();

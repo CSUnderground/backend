@@ -1,0 +1,79 @@
+<style>
+	#preview-editor, .editor-wrapper {
+		width:60%;
+		height:222px;
+	}
+	#preview-editor{
+		position:absolute;
+	}
+</style>
+<script src="https://sandbox.csunderground.org/js/live-editor.editor_ace_deps.js"></script>
+<h1>Editor Settings</h1>
+<hr>
+<label for="editorTheme">Editor Theme</label>
+<div class="input-group">
+	<select id="editorTheme" style="width:100%" class="custom-select">
+	  <option id="textmate" value="ace/theme/textmate">TextMate (default)</option>
+	</select>
+</div>
+<div class="input-group" style="width:100%">
+	<div class="editor-wrapper">
+		<div id="preview-editor"></div>
+	</div>
+</div>
+<a href="javascript:void(0)" id="save" class="btn btn-success">Save</a>
+<script>
+	var previewEditor = ace.edit($("#preview-editor")[0]);
+	previewEditor.setValue("var images = [\n    getImage(\"https://csunderground.org/small-icon.png\"),\n    getImage(\"https://csunderground.org/icon.png\")\n];\ndraw = function() {\n    background(255);\n    imageMode(CENTER);\n    //they is not same :OOOOOOOOOOO\n    image(images[0],200 - frameCount%200,200,100*2,100*2)\n    image(images[1],202 + frameCount%200,202,128*2,128*2)\n};\n\n",-1);
+	previewEditor.setOptions({"selectionStyle":"line","highlightActiveLine":false,"highlightSelectedWord":false,"readOnly":true,"cursorStyle":"ace","mergeUndoDeltas":true,"behavioursEnabled":true,"wrapBehavioursEnabled":true,"hScrollBarAlwaysVisible":false,"vScrollBarAlwaysVisible":false,"highlightGutterLine":true,"animatedScroll":false,"showInvisibles":false,"showPrintMargin":false,"printMarginColumn":80,"printMargin":false,"fadeFoldWidgets":false,"showFoldWidgets":true,"showLineNumbers":true,"showGutter":true,"displayIndentGuides":true,"fontSize":"14px","scrollPastEnd":0,"theme":user.editor.theme,"scrollSpeed":2,"dragDelay":0,"dragEnabled":true,"focusTimout":0,"tooltipFollowsMouse":true,"firstLineNumber":1,"overwrite":false,"newLineMode":"auto","useWorker":false,"useSoftTabs":true,"tabSize":4,"wrap":"free","indentedSoftWrap":true,"mode":"ace/mode/javascript","enableMultiselect":true,"enableBlockSelect":true,"enableBasicAutocompletion":false,"enableLiveAutocompletion":"true","enableSnippets":false});
+	var themes = ace.require("ace/ext/themelist").themes;
+	for(var i in themes){
+		var theme = themes[i];
+		if(theme.theme === "ace/theme/textmate") continue;
+		if(theme.theme === user.editor.theme){
+			$("#editorTheme").append("<option value=\"" + theme.theme + "\" selected>" + theme.caption + "</option>")
+		}else{
+			$("#editorTheme").append("<option value=\"" + theme.theme + "\">" + theme.caption + "</option>")
+		}
+	}
+	if(user.editor.theme === "ace/theme/textmate"){
+		$("#textmate").attr("selected",true)
+	}
+	$("#editorTheme").change(function() {
+		previewEditor.setTheme($("#editorTheme").val());
+	})
+    $("#save").click(function() {
+        $("#save").prop("disabled",true);
+        $("#save").text("Saving...");
+        $.ajax({
+            url:"https://api.csunderground.org/v1/user/editor-settings",
+            type:"put",
+            headers: {
+                "CSU-Session-ID":user.sessionID
+            },
+            data:JSON.stringify({
+                theme: $("#editorTheme").val()
+            }),
+            contentType:"application/json",
+            dataType:'json',
+            success: function(data) {
+                if(data.success == true){
+                    $("#save").text("Saved!");
+                    setTimeout(function() {
+                        $("#save").text("Save");
+                        $("#save").prop("disabled",true);
+                    },3000);
+                }else{
+                    alert("Failed to save editor settings.\nReason: " + data.reason);
+                    $("#save").text("Save");
+                    $("#save").prop("disabled",true);
+                }
+            },
+            error: function(e){
+            	alert("Failed to save editor settings.");
+                $("#save").text("Save");
+                $("#save").prop("disabled",true);
+            }
+        })
+    })
+</script>

@@ -11,7 +11,7 @@
 	    	{{#if session.user}}
 	    	var user = {{{json session.user}}}
 	    	{{else}}
-	    	var user = null;
+	    	var user;
 	    	{{/if}}
 	    	function generateCacheOverride() {
 	    		var nums = "0987654321".split("");
