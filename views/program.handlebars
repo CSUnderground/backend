@@ -161,7 +161,7 @@
         var lastVote = {{#if votedUp}}1{{else if votedDown}}-1{{else}}0{{/if}};
         var isOwner = false;
         if(user){
-            isOwner = (user.id == program.owner.id);
+            isOwner = (user.username == program.owner.username);
         }
         {{#if session.user}}
         if(isOwner){
