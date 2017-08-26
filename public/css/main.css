@@ -72,51 +72,31 @@ a {
     border-color:rgb(223,223,223) !important;
 }
 
-.thumbnail-sizeEnforce {
-    position:relative;
-    width: 100%;
-    padding-bottom: 100%;
-    background-color:#b9b9b9;
-    /*border-bottom:1px solid rgb(223,223,223);*/
-    overflow:hidden;
+.thumbnail {
+    background-color:#fcfcfc;
+	background-size: 0;
+	padding-bottom: 100%;
+	position: relative;
+	overflow: hidden;
 }
-
-.thumbnail-bg {
-    display: block;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-    -webkit-filter: blur(5px) grayscale(50%);
-    -moz-filter: blur(5px) grayscale(50%);
-    -o-filter: blur(5px) grayscale(50%);
-    -ms-filter: blur(5px) grayscale(50%);
-    filter: blur(5px) grayscale(50%);
-    margin: -5px -10px -10px -5px;
+.thumbnail::before {
+	background: center/cover;
+    filter: blur(3px) grayscale(50%);
+    transform: scale(1.02);
 }
-.thumbnail-sizeEnforce img {
-    /*border-top: 1px solid rgba(255,255,255,0.3);
-    border-bottom: 1px solid rgba(255,255,255,0.3);*/
-    filter: drop-shadow(0px 0px 10px rgba(255,255,255,1));
-    vertical-align: middle;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    overflow: hidden;
+.thumbnail::after {
+	background: center/contain no-repeat;
+	filter: drop-shadow(0px 0px 10px rgba(255,255,255,1));
 }
-.thumbnail-sizeEnforce .sizeEnforce-inside{
-    position:absolute;
-    top:0px;
-    left:0px;
-    right:0px;
-    bottom:0px;
-}
-
-.helper {
-    height:100%;
-    vertical-align: middle;
-    display:inline-block;
+.thumbnail::before,
+.thumbnail::after {
+	content: '';
+	background-image: inherit;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
 }
 
 .program-card .title {
