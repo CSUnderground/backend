@@ -73,30 +73,32 @@ a {
 }
 
 .thumbnail {
-    background-color:#fcfcfc;
-	background-size: 0;
-	padding-bottom: 100%;
-	position: relative;
-	overflow: hidden;
+    background-color: #fcfcfc;
+    background-size: 0;
+    position: relative;
+    overflow: hidden;
 }
 .thumbnail::before {
-	background: center/cover;
+    padding-bottom: 100%;
+    background: center/cover;
     filter: blur(3px) grayscale(50%);
     transform: scale(1.02);
+    will-change: transform;
 }
 .thumbnail::after {
-	background: center/contain no-repeat;
-	filter: drop-shadow(0px 0px 10px rgba(255,255,255,1));
+    background: center/contain no-repeat;
+    position: absolute;
+    filter: drop-shadow(0px 0px 10px rgba(255,255,255,1));
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 .thumbnail::before,
 .thumbnail::after {
-	content: '';
-	background-image: inherit;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	left: 0;
-	top: 0;
+    content: '';
+    background-image: inherit;
+    display: block;
 }
 
 .program-card .title {
