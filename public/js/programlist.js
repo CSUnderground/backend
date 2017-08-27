@@ -1,6 +1,6 @@
 function sterilize(str){
 	if(!str) return "UNDEFINED"
-	return str.toString().replace(/</g,"&lt;").replace(/>/g,"&gt;")
+	return str.toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
 }
 function generateProgramCard(program,user) {
 	var votePlural = (program.sumVotes === 1)?"":"s";

@@ -49,7 +49,7 @@ function epochAgo(timeStamp) {
 
 function sterilize(str){
 	if(!str) return "UNDEFINED"
-	return str.toString().replace(/</g,"&lt;").replace(/>/g,"&gt;")
+	return str.toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
 }
 function generateUserCard(user) {
 	return '<div class="program-card"> <div class="card"> <p class="card-text title"><a href="/profile/' + user.username + '">' + sterilize(user.displayName) + '</a></p> <p class="card-text creator" style="overflow:initial"><a href="/profile/' + user.username + '">@' + user.username  + '</a></p> <p class="card-text stats" title="EPOCH: ' + user.accountCreation + '">Created ' + epochAgo(user.accountCreation) + '</p> </div> </div>';
