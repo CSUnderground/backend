@@ -45,7 +45,7 @@
 		                    <h4 class="text-white">You are currently not logged in.</h4>
 		                    <p class="text-muted">Log in to get a full experience on CS Underground. Having an account will allow you to leave commands, vote for programs and even publish your own!</p>
 		                {{else}}
-		                	<h4 class="text-white">Hello, {{{session.user.displayName}}}!</h4>
+		                	<h4 class="text-white">Hello, {{{safeHTML session.user.displayName}}}!</h4>
 		                    <p class="text-muted">You currently have no notifications.</p>
 		                {{/unless}}
 	                </div>
@@ -85,7 +85,7 @@
 				">CS</span>Underground</a>
 	            <div>
 	            	{{#if session.user}}
-		            <span style="margin-right: 1rem;color: rgba(255,255,255,.5)">{{{session.user.displayName}}}</span>
+		            <span style="margin-right: 1rem;color: rgba(255,255,255,.5)">{{{safeHTML session.user.displayName}}}</span>
 		            {{/if}}
 		            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
 			          <span class="navbar-toggler-icon"></span>

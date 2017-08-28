@@ -73,22 +73,36 @@ a {
 }
 
 .thumbnail {
-    background-color: #fcfcfc;
-    background-size: 0;
-    position: relative;
+    position:absolute;
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     overflow: hidden;
 }
-.thumbnail::before {
-    padding-bottom: 100%;
+.thumb-inside-wrap {
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+}
+.thumb-wrap {
+    position:relative;
+    width:100%;
+    padding-bottom:100%;
+}
+/*.thumbnail::before {
+    
     background: center/cover;
-    filter: blur(3px) grayscale(50%);
+    /*filter: blur(3px) grayscale(50%);
     transform: scale(1.02);
     will-change: transform;
 }
 .thumbnail::after {
     background: center/contain no-repeat;
     position: absolute;
-    filter: drop-shadow(0px 0px 10px rgba(255,255,255,1));
+    /*filter: drop-shadow(0px 0px 10px rgba(255,255,255,1));
     left: 0;
     top: 0;
     width: 100%;
@@ -99,7 +113,7 @@ a {
     content: '';
     background-image: inherit;
     display: block;
-}
+}*/
 
 .program-card .title {
 	margin-top:5px;
@@ -134,13 +148,6 @@ a {
 .program-card .card-text {
     padding: 0px 10px;
     margin-bottom: 0px;
-}
-
-.program-card img {
-    position: absolute;
-    transform: translate(-50%,-50%);
-    left: 50%;
-    top: 50%;
 }
 
 .program-card .card{

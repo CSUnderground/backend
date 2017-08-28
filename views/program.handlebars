@@ -39,6 +39,7 @@
 	    	padding:10px 0px;
 	    	border-top:1px solid rgb(200,200,200);
 	    	border-bottom:1px solid rgb(200,200,200);
+            margin-top:2rem;
 	    }
 	    .owner-avatar {
 	    	border-radius:100%;
@@ -119,7 +120,7 @@
                     <a href="/profile/{{{safeJS program.owner.username}}}" style="text-decoration: none;">
             			<img class="owner-avatar" src="https://sandbox.csunderground.org/images/avatars/leaf-green.png">
             			<div class="owner-info-container">
-            				<h2 class="owner-displayname">{{{safeHTML program.owner.displayName}}}</h2>
+            				<h2 class="owner-displayname">{{{safeHTML program.owner.displayName}}}{{#if program.owner.authLevel}}<img src="https://csunderground.org/small-icon-lessdead.png" style="height: 20px;margin-top: -4px;margin-left: 6px;" data-toggle="popover" data-trigger="hover" data-html="true" data-content="<b>CS</b>Underground Staff"></span>{{/if}}</h2>
             				<p class="owner-username">@{{{safeHTML program.owner.username}}}</p>
             			</div>
                     </a>
@@ -157,6 +158,9 @@
 {{#section 'postscripts'}}
 
     <script>
+	    $(function () {
+		  $('[data-toggle="popover"]').popover()
+		})
         var program = {{{json program}}}
         var lastVote = {{#if votedUp}}1{{else if votedDown}}-1{{else}}0{{/if}};
         var isOwner = false;
@@ -326,12 +330,12 @@
             width: program.currentRevision.dimensions[0],
             height: program.currentRevision.dimensions[1],
             autoFocus: true,
-            workersDir: "https://sandbox.csunderground.org/workers/",
-            externalsDir: "https://sandbox.csunderground.org/external/",
-            imagesDir: "https://sandbox.csunderground.org/images/",
-            soundsDir: "https://sandbox.csunderground.org/sounds/",
-            execFile: "https://sandbox.csunderground.org/output.html",
-            jshintFile: "https://sandbox.csunderground.org/external/jshint/jshint.js",
+            workersDir: location.protocol +"//sandbox.csunderground.org/workers/",
+            externalsDir: location.protocol +"//sandbox.csunderground.org/external/",
+            imagesDir: location.protocol +"//sandbox.csunderground.org/images/",
+            soundsDir: location.protocol +"//sandbox.csunderground.org/sounds/",
+            execFile: location.protocol +"//sandbox.csunderground.org/output.html",
+            jshintFile: location.protocol +"//sandbox.csunderground.org/external/jshint/jshint.js",
             useDebugger: false,
             newErrorExperience: true,
             enableLoopProtect:window.loopProtect
