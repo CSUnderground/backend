@@ -52,7 +52,7 @@
 
 <section class="jumbotron text-center noselect">
 		<div style="position:absolute;bottom:2rem;left:0px;right:0px;"><br>
-        	<p style="color:rgba(255,255,255,0.75);font-weight:100;">Some songs are potentially explicit. You have been warned.</p>
+        	<p style="color:rgba(255,255,255,0.75);font-weight:100;">Some songs are PG-13ish. You have been warned.<br>If you can't handle that, run fast young one.</p>
         	</div>
 		<div class="center">
         	<h1 class="jumbotron-heading">404</h1>
@@ -97,12 +97,12 @@ function hslToHex(h, s, l) {
 }
 var t = Math.random() * Date.now();
 	(function(){
-		var songs = ["sonicsugar","sidewok","silvacube","memetilyourdead","granddad","myears","reallyreallyreallyreally","cubetime","gottathriftfast","RihannaftDuck","memesoda"]
+		var songs = ["shootingsynth","fileselect","billnyeneedstochill","twototheonetothethreetothetwototheone","legendofgroovecube","sonicsugar","sidewok","silvacube","memetilyourdead","granddad","myears","reallyreallyreallyreally","cubetime","gottathriftfast","RihannaftDuck","memesoda"]
 		var song = songs[Math.round(Math.random() * (songs.length-1))];
 		$(".playing").text(song)
 		$("#spook").show();
 		$("body").append('<audio src="/404music/' + song + '.mp3" autoplay loop volume="0.1"/>')
-		$("audio")[0].volume = 0.25
+		$("audio")[0].volume = 0.5
 		setInterval(function() {
 			t++;
 			$(".jumbotron-heading").css("color",hslToHex(t%361,100,50))
