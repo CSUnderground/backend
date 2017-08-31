@@ -1,15 +1,23 @@
 {{#section 'head'}}
+	<meta property="og:title" content="this idiot posted a broken link lol" />
+	<meta property="og:description" content="what a nerd lul" />
 	<style>
 		.jumbotron h1{
 			font-size:4rem;
+		}
+		.jumbotron * {
 			text-shadow:0px 0px 5px black;
 		}
 		.jumbotron h3{
 			font-weight:300;
 			color:white;
-			text-shadow:0px 0px 5px black;
+			
+		}
+		.bg-dark {
+			background-color:rgba(0,0,0,0.5) !important;
 		}
 		.jumbotron {
+			background-color:rgba(255,255,255,0) !important;
 			padding-top:3rem;
 			padding-bottom:3rem;
 			height:100%;
@@ -43,9 +51,13 @@
 {{/section}}
 
 <section class="jumbotron text-center noselect">
+		<div style="position:absolute;bottom:2rem;left:0px;right:0px;"><br>
+        	<p style="color:rgba(255,255,255,0.75);font-weight:100;">Some songs are potentially explicit. You have been warned.</p>
+        	</div>
 		<div class="center">
-        <h1 class="jumbotron-heading">404</h1>
-        <h3 id="spook" style="display:none; color:white; ">Now Playing... <span class="playing">Please Wait</span></h3>
+        	<h1 class="jumbotron-heading">404</h1>
+        	<h3 id="spook" style="display:none; color:white; ">Now Playing... <span class="playing">Please Wait</span></h3>
+        
         </div>
         
 </section>
@@ -83,9 +95,9 @@ function hslToHex(h, s, l) {
   };
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
-var t = 0;
+var t = Math.random() * Date.now();
 	(function(){
-		var songs = ["sidewok","silvacube","memetilyourdead","granddad","myears","reallyreallyreallyreally","cubetime","gottathriftfast","RihannaftDuck","memesoda"]
+		var songs = ["sonicsugar","sidewok","silvacube","memetilyourdead","granddad","myears","reallyreallyreallyreally","cubetime","gottathriftfast","RihannaftDuck","memesoda"]
 		var song = songs[Math.round(Math.random() * (songs.length-1))];
 		$(".playing").text(song)
 		$("#spook").show();
@@ -94,7 +106,7 @@ var t = 0;
 		setInterval(function() {
 			t++;
 			$(".jumbotron-heading").css("color",hslToHex(t%361,100,50))
-			$(".jumbotron").css("background-color",hslToHex((t/4)%361,100,30))
+			$("body").css("background-color",hslToHex((t/4)%361,100,30))
 		},1)
 	})()
 </script>
