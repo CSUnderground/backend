@@ -56,6 +56,11 @@
         	</div>
 		<div class="center">
         	<h1 class="jumbotron-heading">404</h1>
+        	<div class="container" style="margin-bottom:8px">
+	        	<div class="progress" style="background-color:rgba(0,0,0,0.25)">
+					<div class="progress-bar" role="progressbar"></div>
+				</div>
+			</div>
         	<h3 id="spook" style="display:none; color:white; ">Now Playing... <span class="playing">Please Wait</span></h3>
         
         </div>
@@ -96,18 +101,34 @@ function hslToHex(h, s, l) {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 var t = Math.random() * Date.now();
-	(function(){
+var inter = -1;
+	function updateSong(){
 		var songs = ["shootingsynth","fileselect","billnyeneedstochill","twototheonetothethreetothetwototheone","legendofgroovecube","sonicsugar","sidewok","silvacube","memetilyourdead","granddad","myears","reallyreallyreallyreally","cubetime","gottathriftfast","RihannaftDuck","memesoda"]
 		var song = songs[Math.round(Math.random() * (songs.length-1))];
 		$(".playing").text(song)
 		$("#spook").show();
-		$("body").append('<audio src="/404music/' + song + '.mp3" autoplay loop volume="0.1"/>')
+		if($("audio")[0]){
+			$("audio")[0].src = '/404music/' + song + '.mp3';
+		}else{
+			$("body").append('<audio src="/404music/' + song + '.mp3" autoplay volume="0.1"/>')
+		}
+		
 		$("audio")[0].volume = 0.5
-		setInterval(function() {
+		$("audio")[0].onended = function() {
+			updateSong();
+		}
+		clearInterval(inter);
+		inter = setInterval(function() {
 			t++;
 			$(".jumbotron-heading").css("color",hslToHex(t%361,100,50))
 			$("body").css("background-color",hslToHex((t/4)%361,100,30))
+			var g = $("audio")[0];
+			$(".progress-bar")
+				.css("background-color",hslToHex((t/2)%361,100,50))
+				.css("width",((g.currentTime/g.duration) * 100).toFixed(3) + "%")
+				.css("transition","none")
 		},1)
-	})()
+	}
+	updateSong();
 </script>
 {{/section}}

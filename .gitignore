@@ -1,6 +1,6 @@
 package.json
 package-lock.json
-app.js
+credentials.js
 node_modules/
 update live-editor.sh
-public/404music
+*.mp3
