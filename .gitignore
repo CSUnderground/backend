@@ -1,5 +1,3 @@
-package.json
-package-lock.json
 credentials.js
 node_modules/
 update live-editor.sh
