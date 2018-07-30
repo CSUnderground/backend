@@ -1282,10 +1282,13 @@ app.engine('handlebars', handlebars({
     helpers:{
         section: sect(),
         json: function(context) {
-            return JSON.stringify(context);
+            return JSON.stringify(context).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        },
+        safeJSON: function(context){
+            return JSON.stringify(context).replace(/\"/g,"\\\"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
         },
         safeHTML: function(context){
-            return context.toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+            return context.toString().replace(/\"/g,"'").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
         },
         safeJS: function(context){
             return context.toString().replace(/\"/g,"\\\"")

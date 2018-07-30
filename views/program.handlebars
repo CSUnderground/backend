@@ -1,5 +1,5 @@
 {{#section 'head'}}
-    <meta property="og:title" content="{{{safeJS program.name}}}" />
+    <meta property="og:title" content="{{{safeHTML program.name}}}" />
     <meta property="og:url" content="https://csunderground.org/program/{{{program.id}}}" />
     <meta property="og:image" content="https://csunderground.org/program/{{{program.id}}}/latest.png" />
     <meta property="og:description" content="{{{program.sumVotes}}} Votes - {{{program.sumViews}}} Views" />
@@ -17,6 +17,10 @@
 	    .program-title {
 	    	margin-bottom:5px;
 	    	color:black;
+            white-space: nowrap;
+            word-wrap: break-all;
+            overflow:hidden;
+            text-overflow: ellipsis;
 	    }
 
         .program-title-input {
@@ -107,7 +111,7 @@
     <div class="container" id="program-meta" style="display:none">
     	<center>
     		<h1 class="program-title">{{{safeHTML program.name}}}</h1>
-            <input style="display:none" type="text" value="{{{safeJS program.name}}}" class="program-title-input">
+            <input style="display:none" type="text" value="{{{safeHTML program.name}}}" class="program-title-input">
     		<p class="program-stats"><span class="program-votes">{{{program.sumVotes}}}</span> Vote{{{plural program.sumVotes}}} - <span class="program-views">{{{program.sumViews}}}</span> View{{{plural program.sumViews}}} - <span class="program-spinoffs">{{{program.spinOffs}}}</span> Spinoff{{{plural program.spinOffs}}}
             <br><span title="Update EPOCH: {{{safeJS program.currentRevision.updated}}}">Last updated {{{timeago program.currentRevision.updated}}}.</span></p>
     	</center>
