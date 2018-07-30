@@ -1269,7 +1269,7 @@ var recaptcha=new reCAPTCHA({
 var https = require("https");
 var http = require("http");
 var pwd = require("pwd");
-var timeago = require("epoch-timeago")
+var timeago = require("epoch-timeago").default;
 
 var app = express();
 
