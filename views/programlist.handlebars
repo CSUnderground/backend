@@ -23,15 +23,10 @@
 
 <div class="program-list text-muted">
     <div class="container">
-	    {{#if session}}
-		<div class="alert alert-info" role="alert">
-			Join the discord for development updates, support and more! <a href="https://discord.gg/UZdvBEu" target="_blank">Click here to join!</a>
-		</div>
-		{{else}}
-		<div class="alert alert-info" role="alert">
-			You need to register to post programs on the site. Please register! Passwords are hashed and salted before storage! CS Underground never stores your password in plain text in our database.
-		</div>
-		{{/if}}
+    	<!--div class="alert alert-success" role="alert">
+			CS Underground will not be shutting down. Please continue to have fun on the site. :)
+		</div-->
+	    
 		<div class="btn-group btn-group-md" id="sorters">
 		  <button id="hot" type="button" class="btn btn-outline-secondary active" onclick="loadPrograms('hot',0)">Hot</button>
 		  <button id="top-voted" type="button" class="btn btn-outline-secondary" onclick="loadPrograms('top-voted',0)">Votes</button>
