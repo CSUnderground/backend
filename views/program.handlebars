@@ -165,9 +165,38 @@
 	    $(function () {
 		  $('[data-toggle="popover"]').popover()
 		})
-        var program = {{{json program}}}
-        var lastVote = {{#if votedUp}}1{{else if votedDown}}-1{{else}}0{{/if}};
-        var isOwner = false;
+    </script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.audio.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.shared.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.tooltips.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.ui.js"></script>
+    <script src="https://sandbox.csunderground.org/js/live-editor.editor_ace.js"></script>
+    <!--<script src="https://sandbox.csunderground.org/js/live-editor.debugger.js"></script>-->
+
+    <script>
+    var programID = window.location.pathname.split("/")[2];
+	var program = {
+		"currentRevision": {
+			"dimensions": [
+			400,
+			400
+			],
+			"code": "println(\"An exception has occured while loading this program.\");",
+			"folds": [],
+			"loopProtect": true,
+			"updated": 0
+		},
+		"owner": {
+			"username": "NULL",
+			"displayName": "NULL",
+			"accountCreation": 0,
+			"authLevel": 0
+		},
+		"type": "pjs",
+	}
+	var isOwner = false;
+	var lastVote = {{#if votedUp}}1{{else if votedDown}}-1{{else}}0{{/if}};
+	function programLoaded() {
         if(user){
             isOwner = (user.username == program.owner.username);
         }
@@ -288,45 +317,38 @@
         $("#loadingNotice").hide();
         $("#program-meta").show();
         $(".owner-container").show();
-    </script>
-    <script src="https://sandbox.csunderground.org/js/live-editor.audio.js"></script>
-    <script src="https://sandbox.csunderground.org/js/live-editor.shared.js"></script>
-    <script src="https://sandbox.csunderground.org/js/live-editor.tooltips.js"></script>
-    <script src="https://sandbox.csunderground.org/js/live-editor.ui.js"></script>
-    <script src="https://sandbox.csunderground.org/js/live-editor.editor_ace.js"></script>
-    <!--<script src="https://sandbox.csunderground.org/js/live-editor.debugger.js"></script>-->
-
-    <script>
-    var search = location.search.substring(1);
-    var params = {};
-    search.split("&").forEach(function(param) {
-        var tokens = param.split("=");
-        params[tokens[0]] = tokens[1];
-    });
-	window.loopProtect = true;
-	if(program.currentRevision.hasOwnProperty("loopProtect")){
-        if(!program.currentRevision.loopProtect){
-            if(!user){
-                    var should = confirm("Press \"OK\" to allow program to disable loop protection.\n\nHitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!");
-                    
-                    if(should == true){
-                        window.loopProtect = program.currentRevision.loopProtect;
-                    }
-            }else{
-                if(user.editor.security.alertLoop){
-                    var should = confirm("Press \"OK\" to allow program to disable loop protection.\n\n" + ((user.id != program.owner.id)?"Hitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!":"If the program keeps crashing your tab, it would be a good idea to not hit \"OK\"."));
-                    if(should == true){
-                        window.loopProtect = program.currentRevision.loopProtect;
-                    }
-                }else{
-                    window.loopProtect = program.currentRevision.loopProtect;
-                }
-            }
-		}
-	}else{
-        program.currentRevision.loopProtect = true;
-    }
     
+	    var search = location.search.substring(1);
+	    var params = {};
+	    search.split("&").forEach(function(param) {
+	        var tokens = param.split("=");
+	        params[tokens[0]] = tokens[1];
+	    });
+		window.loopProtect = true;
+		if(program.currentRevision.hasOwnProperty("loopProtect")){
+	        if(!program.currentRevision.loopProtect){
+	            if(!user){
+	                    var should = confirm("Press \"OK\" to allow program to disable loop protection.\n\nHitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!");
+	                    
+	                    if(should == true){
+	                        window.loopProtect = program.currentRevision.loopProtect;
+	                    }
+	            }else{
+	                if(user.editor.security.alertLoop){
+	                    var should = confirm("Press \"OK\" to allow program to disable loop protection.\n\n" + ((user.id != program.owner.id)?"Hitting cancel will keep it enabled. Please keep in mind that a malicious user could crash your browser!":"If the program keeps crashing your tab, it would be a good idea to not hit \"OK\"."));
+	                    if(should == true){
+	                        window.loopProtect = program.currentRevision.loopProtect;
+	                    }
+	                }else{
+	                    window.loopProtect = program.currentRevision.loopProtect;
+	                }
+	            }
+			}
+		}else{
+	        program.currentRevision.loopProtect = true;
+	    }
+	    launchLiveEditor();
+    }
     function launchLiveEditor() {
         var opts = {
             el: $("#live-editor"),
@@ -448,7 +470,12 @@
             })
         {{/ifCond}}
     }
-	launchLiveEditor();
+	
+
+	$.getJSON("https://api.csunderground.org/v1/program/" + programID, function(resp){
+		program = resp;
+		programLoaded();
+	})
 		
     </script>
 
