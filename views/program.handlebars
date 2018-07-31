@@ -84,6 +84,55 @@
             color:gray;
         }
 
+        .discussionPost{
+        	padding:10px;
+        	border:1px solid rgb(200,200,200);
+        	background-color:white;
+        	border-radius: 30px;
+        	display: flex;
+			align-items: center; 
+        }
+
+        .discussionAuthor{
+        	vertical-align: middle;
+        	border-radius: 100%;
+        	font-weight: 600;
+        	color:rgb(50,50,50);
+        	line-height: 1;
+        }
+
+        .discussionContent{
+        	margin-left:10px;
+        	color:black;
+        	vertical-align: middle;
+        }
+
+        .discussionMessage{
+        	line-height: 1.25;
+        }
+
+        .tools {
+        	font-size:12px;
+        	margin-top:5px;
+        }
+
+        .tools a{
+        	color:rgb(100,100,100);
+        	text-decoration: underline;
+        }
+
+        .hasReplies{
+        	border-bottom-right-radius: 0px;
+        }
+
+        .reply{
+        	background-color:rgb(245,245,245);
+        	border-top-left-radius:0px;
+        	border-top-right-radius: 0px;
+        	margin-top:-1px;
+        	margin-left:50px;
+        }
+
 	</style>
 	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.core_deps.css"/>
 	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.audio.css"/>
@@ -150,6 +199,28 @@
           <button id="spinOffs" type="button" class="btn btn-outline-secondary" onclick="">Spin-Offs</button>
         </div>
         <hr>
+    </div>
+    <div class="container" id="discussion">
+    	<div class="discussionPost hasReplies">
+    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
+    		<div class="discussionContent">
+    			<div class="discussionAuthor">Author Name (@Bot)</div>
+	    		<div class="discussionMessage">Message #1<br>With multi lines</div>
+	    		<div class="tools" >
+	    			<a href="#">Reply</a> - <a href="#">Edit</a> - <a href="#">Delete</a>
+	    		</div>
+	    	</div>
+    	</div>
+    	<div class="discussionPost reply">
+    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
+    		<div class="discussionContent">
+    			<div class="discussionAuthor">Cool Name (@ReplyBot)</div>
+	    		<div class="discussionMessage">This is a sweet reply, isn't it?</div>
+	    		<div class="tools" >
+	    			<a href="#">Reply</a> - <a href="#">Report</a>
+	    		</div>
+	    	</div>
+    	</div>
     </div>
 </div>
 
