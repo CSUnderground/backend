@@ -92,13 +92,17 @@
         	display: flex;
 			align-items: center; 
         }
+        .discussionPost img{
+        	max-width: 80px;
+        	max-height: 80px;
+        }
 
         .discussionAuthor{
-        	vertical-align: middle;
         	border-radius: 100%;
         	font-weight: 600;
         	color:rgb(50,50,50);
         	line-height: 1;
+        	align-self: baseline;
         }
 
         .discussionContent{
@@ -108,24 +112,32 @@
         }
 
         .discussionMessage{
+        	margin-top:5px;
         	line-height: 1.25;
         }
 
         .tools {
+        	cursor:default;
         	font-size:12px;
         	margin-top:5px;
         }
 
         .tools a{
         	color:rgb(100,100,100);
+        }
+
+        .tools a:hover .tools a:focus{
         	text-decoration: underline;
         }
 
         .hasReplies{
         	border-bottom-right-radius: 0px;
         }
-
-        .reply{
+        .reply-mid{
+        	border-bottom-left-radius: 0px;
+        	border-bottom-right-radius: 0px;
+        }
+        .reply, .reply-mid{
         	background-color:rgb(245,245,245);
         	border-top-left-radius:0px;
         	border-top-right-radius: 0px;
@@ -203,21 +215,38 @@
     <div class="container" id="discussion">
     	<div class="discussionPost hasReplies">
     		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
-    		<div class="discussionContent">
+    		<div class="discussionContent" style="width:100%;">
     			<div class="discussionAuthor">Author Name (@Bot)</div>
-	    		<div class="discussionMessage">Message #1<br>With multi lines</div>
+	    		<div class="discussionMessage">Message #1</div>
 	    		<div class="tools" >
-	    			<a href="#">Reply</a> - <a href="#">Edit</a> - <a href="#">Delete</a>
+	    			<a href="#">Reply</a> - <a href="#">Edit</a> - <a href="#">Delete</a> - <i>Posted yesterday, updated 8 hours ago.</i>
+	    		</div>
+	    		<div class="replyEntry" style="width:100%; border-top:1px solid rgb(200,200,200); padding-top:10px; margin-top:5px;">
+	    			<textarea style="width:100%;height:80px;resize:none">Hello, world. This is a reply.</textarea>
+	    			<div class="bar">
+	    				<button type="button" class="btn btn-success btn-sm" >Reply</button> <button type="button" class="btn btn-outline-secondary btn-sm" >Cancel</button>
+	    			</div>
 	    		</div>
 	    	</div>
     	</div>
-    	<div class="discussionPost reply">
+    	<div class="discussionPost reply-mid">
     		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
     		<div class="discussionContent">
     			<div class="discussionAuthor">Cool Name (@ReplyBot)</div>
 	    		<div class="discussionMessage">This is a sweet reply, isn't it?</div>
 	    		<div class="tools" >
-	    			<a href="#">Reply</a> - <a href="#">Report</a>
+	    			<a href="#" style="color:rgb(100,170,100); font-weight:500">▲</a> &middot; <a href="#" style="color:rgb(160,160,160); font-weight:500;">▼</a> - <a href="#">Reply</a> - <a href="#">Report</a> - <i>Posted yesterday, updated just now.</i>
+	    		</div>
+	    	</div>
+    	</div>
+
+    	<div class="discussionPost reply">
+    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
+    		<div class="discussionContent">
+    			<div class="discussionAuthor">Old man (@Oof)</div>
+	    		<div class="discussionMessage">This is the last reply.<br>now everyone stop bugging me thx</div>
+	    		<div class="tools" >
+	    			<a href="#" style="color:rgb(160,160,160); font-weight:500;">▲</a> &middot; <a href="#" style="color:rgb(170,100,100); font-weight:500">▼</a> - <a href="#">Reply</a> - <a href="#">Report</a> - <i>Posted 3 years ago.</i>
 	    		</div>
 	    	</div>
     	</div>
