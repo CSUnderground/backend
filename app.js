@@ -1152,6 +1152,22 @@ server.put("/v1/user/:type", function(req, res, next){
                                 db.close();
                                 return;
                             }
+                            if(safeModify.username.length < 3){
+                                res.send({
+                                    success:false,
+                                    reason:"Username must be at least 4 characters."
+                                });
+                                db.close();
+                                return;
+                            }
+                            if(safeModify.displayName.length < 1){
+                                res.send({
+                                    success:false,
+                                    reason:"Display name must be at least one character."
+                                });
+                                db.close();
+                                return;
+                            }
                             var accounts = db.collection("accounts");
                             accounts.find({username:{$regex:'^' + req.body.username + '$', $options: 'i'}}).toArray(function(err, docs){
                                 if(safeModify.username.toLowerCase() !== account.username.toLowerCase() && docs.length > 0){
@@ -1697,6 +1713,135 @@ app.post("/login", function(req, res){
     })
 })
 
+app.get("/resetpassword", function(req,res){
+	if(req.session.user){
+        res.redirect("/");
+        return;
+    }
+	if(!req.secure){
+		res.redirect("https://csunderground.org/resetpassword")
+		return 
+	}
+    res.render("resetpassword",{
+        title:"Reset Password - CS Underground"
+    })
+});
+app.post("/resetpassword", function(req, res){
+	if(req.session.user){
+        res.send({
+			success:false,
+			error:"You're currently logged in."
+		})
+        return;
+    }
+    //console.log(req.body);
+    if(!req.secure){
+		res.send({
+			success:false,
+			error:"Insecure"
+		})
+		return 
+	}
+	var code = req.body.code;
+	var pass = req.body.pass;
+    if(codes.hasOwnProperty(code)){
+    	if(codes[code].expiry <= Date.now()){
+    		delete codes[code];
+    		res.send({
+	    		success:false,
+	    		error:"Invalid recovery code."
+	    	})
+    	}else{
+    		// reset password now.
+    		mongodb.connect(mongourl, function(err, db){
+                if(err){
+                    res.send({
+                        success:false,
+                        error:"backend db err"
+                    });
+                    db.close();
+                    return;
+                }
+                var accounts = db.collection("accounts");
+                pwd.hash(pass, function(err,salt, hash){
+	                if(err){db.close(); return console.log(err);}
+	                accounts.findOneAndUpdate({id:codes[code].userid},{$set: {
+	                	auth: {
+		                    hash:hash,
+		                    salt:salt
+		                }
+	                }}, function(err, results){
+	                    if(!err){
+	                        res.send({
+	                            success:true,
+	                            reason:"Password reset."
+	                        });
+	                    }else{
+	                        res.send(500,{
+	                            success:false,
+	                            reason:"An error occured."
+	                        });
+	                    }
+	                    db.close();
+                })
+	            });
+                
+            })
+    	}
+    }else{
+    	res.send({
+    		success:false,
+    		error:"Invalid recovery code."
+    	})
+    }
+})
+var codes = {
+	//"code": "userid"
+}
+function randomString(length){
+	var dict = "1234567890ABCDEF".split("");
+	var stri = "";
+	for(var i = 0; i < length; i++){
+		stri+=dict[Math.round(Math.random() * (dict.length-1))];
+	}
+	if(codes.hasOwnProperty(stri)){
+		stri = randomString(length);
+	}
+	return stri;
+}
+function generateRecoveryCode() {
+	return "CSU:" + randomString(Math.round(Math.random() * 3) + 4) + "-" + randomString(Math.round(Math.random() * 6) + 12);
+}
+app.get("/genresetcode/:user", function(req, res, next){
+	if(!req.session.user){
+		next();
+		return;
+	}
+	if(req.session.user.authLevel == 2){
+		getAccountByUsername(req.params.user, function(account){
+	        if(account){
+	            var code = generateRecoveryCode();
+	            codes[code] = {
+	            	expiry: Date.now() + ((1000 * 60 * 60) * 3), // 3 hours.
+	            	userid:account.id
+	            }
+	            res.send(account.id + " --> https://csunderground.org/resetpassword?" + code);
+
+	        }else{
+	            res.send(500, "No user.");
+	        }
+	    })
+		return;
+	}
+	next();
+})
+setInterval(function() {
+	for(var i in codes){
+		if(Date.now() > codes[i].expiry){
+			delete codes[i];
+		}
+	}
+},1000*60*5);
 app.get("/register", function(req,res){
 	if(!req.secure){
 		res.redirect("https://csunderground.org/login")

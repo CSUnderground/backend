@@ -88,7 +88,7 @@
         	padding:10px;
         	border:1px solid rgb(200,200,200);
         	background-color:white;
-        	border-radius: 30px;
+        	border-radius: 10px;
         	display: flex;
 			align-items: center; 
         }
@@ -213,54 +213,56 @@
         <hr>
     </div>
     <div class="container" id="discussion">
-    	<div class="discussionPost hasReplies">
-    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
-    		<div class="discussionContent" style="width:100%;">
-    			<div class="discussionAuthor">Author Name (@Bot)</div>
-	    		<div class="discussionMessage">Message #1</div>
-	    		<div class="tools" >
-	    			<a href="#">Reply</a> - <a href="#">Edit</a> - <a href="#">Delete</a> - <i>Posted yesterday, updated 8 hours ago.</i>
-	    		</div>
-	    		<div class="replyEntry" style="width:100%; border-top:1px solid rgb(200,200,200); padding-top:10px; margin-top:5px;">
-	    			<textarea style="width:100%;height:80px;resize:none">Hello, world. This is a reply.</textarea>
-	    			<div class="bar">
-	    				<button type="button" class="btn btn-success btn-sm" >Reply</button> <button type="button" class="btn btn-outline-secondary btn-sm" >Cancel</button>
-	    			</div>
-	    		</div>
+    	<div class="post" thread="1">
+	    	<div class="discussionPost hasReplies">
+	    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
+	    		<div class="discussionContent" style="width:100%;">
+	    			<div class="discussionAuthor">Author Name (@Bot)</div>
+		    		<div class="discussionMessage">Message #1</div>
+		    		<div class="tools" >
+		    			<a href="#" style="color:rgb(100,170,100); font-weight:500">▲</a> 3,283 <a href="#" style="color:rgb(160,160,160); font-weight:500;">▼</a> - <a href="#">Reply</a> - <a href="#">Edit</a> - <a href="#">Delete</a> - <i>Posted yesterday, updated 8 hours ago.</i> <span style="float:right">3 replies - <a href="javascript:void(0);" onclick="$('.replyfor-1').hide(); $('.hasReplies').removeClass('hasReplies')">Toggle Replies</a></span>
+		    		</div>
+		    		<div class="replyEntry" style="width:100%; border-top:1px solid rgb(200,200,200); padding-top:10px; margin-top:5px;">
+		    			<textarea style="width:100%;height:80px;resize:none">Hello, world. This is a reply.</textarea>
+		    			<div class="bar">
+		    				<button type="button" class="btn btn-success btn-sm" >Reply</button> <button type="button" class="btn btn-outline-secondary btn-sm" >Cancel</button>
+		    			</div>
+		    		</div>
+		    	</div>
 	    	</div>
-    	</div>
-    	<div class="discussionPost reply-mid">
-    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
-    		<div class="discussionContent">
-    			<div class="discussionAuthor">Cool Name (@ReplyBot)</div>
-	    		<div class="discussionMessage">This is a sweet reply, isn't it?</div>
-	    		<div class="tools" >
-	    			<a href="#" style="color:rgb(100,170,100); font-weight:500">▲</a> &middot; <a href="#" style="color:rgb(160,160,160); font-weight:500;">▼</a> - <a href="#">Reply</a> - <a href="#">Report</a> - <i>Posted yesterday, updated just now.</i>
-	    		</div>
+	    	<div class="discussionPost reply-mid replyfor-1">
+	    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
+	    		<div class="discussionContent">
+	    			<div class="discussionAuthor">Cool Name (@ReplyBot)</div>
+		    		<div class="discussionMessage">This is a sweet reply, isn't it?</div>
+		    		<div class="tools" >
+		    			<a href="#" style="color:rgb(100,170,100); font-weight:500">▲</a> 64 <a href="#" style="color:rgb(160,160,160); font-weight:500;">▼</a> - <a href="#">Reply</a> - <a href="#">Report</a> - <i>Posted yesterday, updated just now.</i>
+		    		</div>
+		    	</div>
 	    	</div>
-    	</div>
 
-    	<div class="discussionPost reply-mid" style="background-color:rgb(250,250,250)">
-    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
-    		<div class="discussionContent">
-    			<div class="discussionAuthor">Old man (@Oof)</div>
-	    		<div class="discussionMessage">This is the last reply.<br>now everyone stop bugging me thx</div>
-	    		<div class="tools" >
-	    			<a href="#" style="color:rgb(160,160,160); font-weight:500;">▲</a> &middot; <a href="#" style="color:rgb(170,100,100); font-weight:500">▼</a> - <a href="#">Reply</a> - <a href="#">Report</a> - <i>Posted 3 years ago.</i>
-	    		</div>
+	    	<div class="discussionPost reply-mid replyfor-1" style="background-color:rgb(250,250,250)">
+	    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
+	    		<div class="discussionContent">
+	    			<div class="discussionAuthor">Old man (@Oof)</div>
+		    		<div class="discussionMessage">This is the last reply.<br>now everyone stop bugging me thx</div>
+		    		<div class="tools" >
+		    			<a href="#" style="color:rgb(160,160,160); font-weight:500;">▲</a> -420 <a href="#" style="color:rgb(170,100,100); font-weight:500">▼</a> - <a href="#">Reply</a> - <a href="#">Report</a> - <i>Posted 3 years ago.</i>
+		    		</div>
+		    	</div>
 	    	</div>
-    	</div>
 
-    	<div class="discussionPost reply">
-    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
-    		<div class="discussionContent">
-    			<div class="discussionAuthor">Cool Name (@ReplyBot)</div>
-	    		<div class="discussionMessage">nope. :)</div>
-	    		<div class="tools" >
-	    			<a href="#" style="color:rgb(100,170,100); font-weight:500">▲</a> &middot; <a href="#" style="color:rgb(160,160,160); font-weight:500;">▼</a> - <a href="#">Reply</a> - <a href="#">Report</a> - <i>Posted 3 hours ago.</i>
-	    		</div>
+	    	<div class="discussionPost reply replyfor-1">
+	    		<img src="http://via.placeholder.com/80x80" class="discussionAuthor">
+	    		<div class="discussionContent">
+	    			<div class="discussionAuthor">Cool Name (@ReplyBot)</div>
+		    		<div class="discussionMessage">nope. :)</div>
+		    		<div class="tools" >
+		    			<a href="#" style="color:rgb(100,170,100); font-weight:500">▲</a> 128 <a href="#" style="color:rgb(160,160,160); font-weight:500;">▼</a> - <a href="#">Reply</a> - <a href="#">Report</a> - <i>Posted 3 hours ago.</i>
+		    		</div>
+		    	</div>
 	    	</div>
-    	</div>
+	    </div>
     </div>
 </div>
 
@@ -276,6 +278,46 @@
 	    $(function () {
 		  $('[data-toggle="popover"]').popover()
 		})
+		/**
+		Discussion Testing.
+		**/
+		var genericComment = {
+			threadID:1,
+			author:{
+				username:"Test",
+				displayName:"Test Person",
+				accountCreation:0
+			},
+			score: 10,
+			userVoted:1, //up
+			content:"Hello\nWorld\n*Testytest*.\n **Test!**\n ***Woah.***\n __Underline__\n ~~Strike~~\n `code`\n ```codeblock```",
+			replies:[
+				{
+					author:{
+						username:"Test2",
+						displayName:"Cool Dude",
+						accountCreation:0,
+					},
+					score:299,
+					userVoted:-1,
+					content:"This is a reply."
+				}
+			]
+		}
+		function generateCommentElement(comment){
+			var main = $("")
+			for(var i = 0; i < comment.replies.length; i++){
+
+			}
+		}
+
+		function toggleReplies(threadID){
+
+		}
+
+		function toggleReply(threadID){
+
+		}
     </script>
     <script src="https://sandbox.csunderground.org/js/live-editor.audio.js"></script>
     <script src="https://sandbox.csunderground.org/js/live-editor.shared.js"></script>
@@ -540,7 +582,9 @@
         }else{
         	$(".csunderground-toolbar").append('<a id="save-code" href="javascript:void(0)" class="btn btn-primary" style="margin-right: 6px;">Spin-Off</a>')
         }
-        $(".csunderground-toolbar").prepend('<button type="button" class="btn btn-secondary toggle-options" data-original-title title>Options</button>')
+        
+        $(".csunderground-toolbar").prepend('<button type="button" class="btn btn-secondary toggle-options" data-toggle="popover">Options</button>')
+
         window.popoverButton = $(".toggle-options").popover({
             content:'<div class="input-group options-ig"><span class="input-group-addon options-addon" id="addon-width">Width</span><input type="text" class="form-control" id="options-width" value="' + program.currentRevision.dimensions[0] + '" placeholder="Width" aria-label="Width" aria-describedby="addon-width"></div><div class="input-group options-ig"><span class="input-group-addon options-addon" id="addon-height">Height</span><input type="text" id="options-height" class="form-control" value="' + program.currentRevision.dimensions[1] + '" placeholder="Height" aria-label="Height" aria-describedby="addon-height"></div><div class="input-group options-ig"><button id="toggle-loopprotect" class="btn ' + ((window.loopProtect)?"btn-success":"btn-secondary") + '" style="width:100%">Loop Protect ' + ((window.loopProtect)?"Enabled":"Disabled") +'</button></div>',
             html:true,
@@ -563,6 +607,7 @@
                 }
             })
         })
+
         {{#ifCond session.user.authLevel '>' '0'}}
             $(".csunderground-toolbar").prepend('<a id="mod-options" href="javascript:void(0)" class="btn btn-warning" style="margin-right: 9px;">Mod Options</a>')
             $("#mod-options").popover({
