@@ -903,6 +903,7 @@ function updateProgramSums(id){
     });
 }
 mongodb.connect(mongourl, function(err, db){
+	if(err){console.log(err);return}
     var programs = db.collection("programs");
     programs.find().toArray(function(err, doc){
         for(var i in doc){
@@ -1822,7 +1823,7 @@ app.get("/genresetcode/:user", function(req, res, next){
 	        if(account){
 	            var code = generateRecoveryCode();
 	            codes[code] = {
-	            	expiry: Date.now() + ((1000 * 60 * 60) * 3), // 3 hours.
+	            	expiry: Date.now() + (((1000 * 60 * 60) * 24) * 14), // 2 weeks.
 	            	userid:account.id
 	            }
 	            res.send(account.id + " --> https://csunderground.org/resetpassword?" + code);
