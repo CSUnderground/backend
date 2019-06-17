@@ -72,16 +72,45 @@ function generateUserId(db,callback) {
         return callback(str);
     })
 }
+
+var programIDLength = 10;
 function generateProgramId(db,callback) {
-    var idLen = 10;
-    getNextIterate("programs",db,function(num){
-        var str = (num).toString();
-        while(str.length < idLen){
-            str = "0" + str;
+    var idLen = programIDLength;
+    var chars = "0123456789abcdef".split("");
+    var generatedID = "";
+    for(var i = 0; i < idLen; i++){
+        generatedID += chars[Math.floor(Math.random() * chars.length)];
+    }
+    isProgram(generatedID, function(exists){
+        if(!exists){
+            callback(generatedID);
+        }else{
+            generateProgramId(db, callback);
         }
-        return callback(str);
     })
 }
+
+mongodb.connect(mongourl, function(err, db){
+    if(err){
+        console.log(err);
+        if(db){
+            db.close();
+        }
+        return;
+    } 
+    db.close();
+    var programs = db.collection("programs");
+    /*programs.find({}).each(function(err,doc){
+        if(doc){
+            generateProgramId(db, function(myID) {
+                console.log(myID);
+                programs.findOneAndUpdate({id: doc.id}, {$set:{id: myID}}, function(err,result){
+                    console.log(err)
+                })
+            });
+        }
+    });*/
+});
 
 function cleanProgram(program,callback){
     var doc = program;
@@ -105,7 +134,7 @@ function cleanProgram(program,callback){
     })
 }
 function getProgramDirty(id, callback){
-    if (!isNaN(id) || id.length === 10) {
+    if (id.length === programIDLength) {
         mongodb.connect(mongourl, function(err, db){
             if(err){
             	db.close();
@@ -126,8 +155,28 @@ function getProgramDirty(id, callback){
         });
     }
 }
+
+function isProgram(id, callback){
+    if (id.length === programIDLength) {
+        mongodb.connect(mongourl, function(err, db){
+            if(err){
+                db.close();
+                return callback();
+            } 
+            var programs = db.collection("programs");
+            programs.findOne({id:id}, function(err, doc){
+                var exists = false;
+                if(doc){
+                    exists = true;
+                }
+                callback(exists)
+                db.close();
+            });
+        });
+    }
+}
 function getProgram(id,callback, voteCheckAccount){
-    if (!isNaN(id) || id.length === 10) {
+    if ( id.length === programIDLength) {
         mongodb.connect(mongourl, function(err, db){
             if(err){
             	db.close();

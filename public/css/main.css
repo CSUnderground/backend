@@ -162,3 +162,17 @@ footer {
 footer p {
     margin-bottom: .25rem;
 }
+
+
+#toggle-loopprotect {
+    text-align:center;
+    display:block;
+}
+
+#title-404 {
+    transition: font-size .5s ease;
+}
+#title-404:hover {
+    font-size:4.5rem;
+    cursor:pointer;
+}

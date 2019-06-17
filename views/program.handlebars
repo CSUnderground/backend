@@ -152,13 +152,14 @@
 	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.ui.css"/>
 	<link rel="stylesheet" href="https://sandbox.csunderground.org/css/live-editor.debugger.css"/>
     <script>
-    if(user){
-        if(user.editor.security.alertRedirect){
-            window.onbeforeunload = function(e) {
-              return "Woah cool stuff.";
-            };
+    window.unsavedChanges = false;
+    window.onbeforeunload = function(e) {
+        if(user && user.editor.security.alertRedirect || window.unsavedChanges ){
+            e.preventDefault();
+            e.returnValue='';
         }
-    }
+    };
+    
     </script>
 {{/section}}
 
@@ -527,8 +528,10 @@
         }
         liveEditor.editor.setFolds(program.currentRevision.folds);
         liveEditor.editor.on("change", function() {
-            program.currentRevision.code = liveEditor.editor.text();
-            program.currentRevision.folds = liveEditor.editor.getAllFolds();
+            window.unsavedChanges = (
+                program.currentRevision.code != liveEditor.editor.text() || 
+                program.currentRevision.folds != liveEditor.editor.getAllFolds()
+                );
         });
         ScratchpadAutosuggest.init(liveEditor.editor.editor);
         if(user){
@@ -546,6 +549,9 @@
             $("#save-code").click(function() {
                     $("#save-code").prop("disabled",true);
                     $("#save-code").text("Saving...");
+                    program.currentRevision.code = liveEditor.editor.text();
+                    program.currentRevision.folds = liveEditor.editor.getAllFolds();
+
                     liveEditor.getScreenshot(function(screen){
                         $.ajax({
                             url:"https://api.csunderground.org/v1/program/{{{program.id}}}",
@@ -570,6 +576,7 @@
                                         $("#save-code").text("Save");
                                         $("#save-code").prop("disabled",true);
                                     },3000);
+                                    window.unsavedChanges = false;
                                 }else{
                                     alert("Failed to save program.\nReason: " + data.reason);
                                     $("#save-code").text("Save");
