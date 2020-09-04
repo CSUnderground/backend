@@ -16,7 +16,7 @@
     "express-handlebars-sections": "^1.0.1",
     "express-http2": "^4.13.4",
     "express-session": "^1.15.6",
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.4.5",
     "hoek": "^4.2.1",
     "mime": "^2.0.3",
     "mongodb": "^2.2.36",
