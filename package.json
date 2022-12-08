@@ -11,7 +11,7 @@
     "cors": "^2.8.4",
     "ddos": "^0.1.31",
     "epoch-timeago": "^1.1.9",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "express-handlebars": "^3.0.0",
     "express-handlebars-sections": "^1.0.1",
     "express-http2": "^4.13.4",
